@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>load timeout test</title>
+        <script src="/src/boot.js"></script>
+        <script src="/src/lang.js"></script>
+        <script src="/src/event.js"></script>
+        <script src="/src/config.js"></script>
+        <script src="/src/module.js"></script>
+        <script src="/src/alias.js"></script>
+        <script src="/src/plugin.js"></script>
+        <script src="/src/id2url.js"></script>
+        <script src="/src/assets.js"></script>
+        <script src="/src/when.js"></script>
+        <script src="/src/request.js"></script>
+        <script src="/src/loader.js"></script>
+        <script src="/src/async.js"></script>
+        <script src="/src/fetch.js"></script>
+        <script src="/src/use.js"></script>
+        <script src="/src/console.js"></script>
+        <script src="/src/logger.js"></script>
+        
+        <script>
+            fmd.on( 'requireFailed', function( meta ){
+                var message = [meta.id,'does not exist'];
+                if ( fmd.cache.assets ){
+                    var assets = fmd.cache.assets;
+                    for ( var i = 0, l = assets.length; i < l; i++ ){
+                        var asset = assets[i];
+                        if ( meta.id === asset.id ){
+                            message.push('state: ' + asset.state );
+                        }
+                    }
+                }
+                if ( fmd.cache.modules[meta.id] ){
+                    message.push( 'compiled: ' + fmd.cache.modules[meta.id].compiled );
+                } else {
+                    message.push( 'really not exist' );
+                }
+                fmd.log( message.join('|') );
+            } );
+            
+            fmd.config({
+                debug: true,
+                timeout: 4000,
+                resolve: function(id){
+                    switch(id){
+                        case 'fmd/console':
+                            id = 'src/console';
+                            break;
+                        case 'delay-before':
+                            id = 'tests/research/load/delay.php?sleep=3&mock.js';
+                            break;
+                        case 'delay-after':
+                            id = 'tests/research/load/delay.php?sleep=5&mock.js';
+                            break;
+                    }
+                    return id;
+                }
+            });
+        </script>
+    </head>
+    <body>
+        <div>delay before</div>
+        <div>delay after</div>
+        <script>
+            define(['require'],function(require){
+                require.use('delay-before');
+                require.use('delay-after');
+                require.use('404');
+            });
+        </script>
+    </body>
+</html>

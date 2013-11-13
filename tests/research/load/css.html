@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>load css</title>
+    </head>
+    <body>
+        <div id="a">test</div>
+        <script>
+            var node = document.createElement('link');
+            //alert('onload' in node);
+            
+            //alert(( navigator.userAgent.replace(/.*AppleWebKit\/(\d+)\..*/, "$1") ) * 1)
+            node.rel='stylesheet';
+            node.href='/tests/research/load/a.css?t='+(new Date()).getTime();
+            
+            //node.onload = function(){
+            //    alert(getComputedStyle(document.getElementById('a'))['color']);
+            //};
+            
+            var img = document.createElement('img');
+            
+            img.onerror = function(){
+                //setTimeout(function(){
+                    alert(getComputedStyle(document.getElementById('a'))['color']);
+                //},1);
+                img.onerror = null;
+                img = undefined;
+            };
+            img.src = node.href;
+            
+            document.getElementsByTagName('head')[0].appendChild(node);
+        </script>
+    </body>
+</html>
