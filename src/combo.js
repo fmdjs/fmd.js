@@ -20,7 +20,10 @@ fmd( 'combo', ['cache','lang','event','config','module','assets','plugin','when'
     var PLUGIN_ASYNC = 'async',
         PLUGIN_NON = 'non',
         PLUGIN_COMBO = '_combo',
-        PLUGIN_COMBO_NON = '_combo_non';
+        PLUGIN_COMBO_NON = '_combo_non',
+        COMBO_SYNTAX = 'comboSyntax',
+        COMBO_MAX_LENGTH = 'comboMaxLength',
+        EVENT_FETCH = 'fetch';
     
     var rStyle = /\.css(?:\?|$)/i,
         rSplitUrl = /((?:[\w]+)\:\/\/(?:[\w|\.|\:]+)\/)(.+)/i;
@@ -83,8 +86,8 @@ fmd( 'combo', ['cache','lang','event','config','module','assets','plugin','when'
             return;
         }
         
-        config.get('comboSyntax') && ( comboSyntax = config.get('comboSyntax') );
-        config.get('comboMaxLength') && ( comboMaxLength = config.get('comboMaxLength') );
+        config.get(COMBO_SYNTAX) && ( comboSyntax = config.get(COMBO_SYNTAX) );
+        config.get(COMBO_MAX_LENGTH) && ( comboMaxLength = config.get(COMBO_MAX_LENGTH) );
         
         var asset, mod, needComboGroup = [];
         
@@ -124,7 +127,7 @@ fmd( 'combo', ['cache','lang','event','config','module','assets','plugin','when'
     
     extract = function( needComboGroup, assetsGroup ){
         
-        var id, meta, comboUrl,
+        var id, meta, comboUrl, cacheId,
             cache = {};
         
         var makeMeta = function( id, asset ){
@@ -163,8 +166,8 @@ fmd( 'combo', ['cache','lang','event','config','module','assets','plugin','when'
             asset.requested = true;
         } );
         
-        for ( id in cache ){
-            pushGroup( cache[id], assetsGroup );
+        for ( cacheId in cache ){
+            pushGroup( cache[cacheId], assetsGroup );
         }
     },
     
@@ -218,11 +221,11 @@ fmd( 'combo', ['cache','lang','event','config','module','assets','plugin','when'
             this.combo = val;
             
             if ( val === true ){
-                event.on( 'fetch', onFetch );
+                event.on( EVENT_FETCH, onFetch );
                 plugin.register( PLUGIN_COMBO, comboExecute );
                 plugin.register( PLUGIN_COMBO_NON, comboNonExecute );
             } else {
-                event.off( 'fetch', onFetch );
+                event.off( EVENT_FETCH, onFetch );
                 plugin.register( PLUGIN_COMBO, null );
                 plugin.register( PLUGIN_COMBO_NON, null );
             }

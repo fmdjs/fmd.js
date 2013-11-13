@@ -11,7 +11,8 @@ fmd( 'loader', ['global','event','config','request'],
     'use strict';
     
     var STATE_LOADING = 'loading',
-        STATE_LOADED = 'loaded';
+        STATE_LOADED = 'loaded',
+        EVENT_REQUEST_COMPLETE = 'requestComplete';
         
     var noop = function(){};
     
@@ -21,7 +22,7 @@ fmd( 'loader', ['global','event','config','request'],
     });
     
     
-    event.on( 'requestComplete', function( asset ){
+    event.on( EVENT_REQUEST_COMPLETE, function( asset ){
         
         var call, queue;
         
@@ -63,7 +64,7 @@ fmd( 'loader', ['global','event','config','request'],
         
         request( asset, function(){
             global.clearTimeout( asset.timer );
-            event.emit( 'requestComplete', asset );
+            event.emit( EVENT_REQUEST_COMPLETE, asset );
         } );
     };
     

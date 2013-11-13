@@ -12,7 +12,9 @@ fmd( 'id2url', ['global','event','config'],
     
     var rAbsolute = /^https?:\/\//i;
     
-    var TIME_STAMP = ( new Date() ).getTime();
+    var TIME_STAMP = ( new Date() ).getTime(),
+        RESOLVE = 'resolve',
+        STAMP = 'stamp';
     
     
     config.set({
@@ -27,18 +29,18 @@ fmd( 'id2url', ['global','event','config'],
     });
     
     config.register({
-        keys: 'resolve',
+        keys: RESOLVE,
         name: 'array'
     })
     .register({
-        keys: 'stamp',
+        keys: STAMP,
         name: 'object'
     });
     
     
     var parseResolve = function( asset ){
             
-        var resolve = config.get('resolve'),
+        var resolve = config.get(RESOLVE),
             url;
         
         if ( resolve ){
@@ -69,7 +71,7 @@ fmd( 'id2url', ['global','event','config'],
     addStamp = function( asset ){
             
         var t = config.get('hasStamp') ? TIME_STAMP : null,
-            stamp = config.get('stamp');
+            stamp = config.get(STAMP);
             
         if ( stamp ){
             for ( var key in stamp ){
@@ -86,17 +88,17 @@ fmd( 'id2url', ['global','event','config'],
     id2url = function( asset ){
         
         event.emit( 'alias', asset );
-        event.emit( 'resolve', asset );
+        event.emit( RESOLVE, asset );
         
         addBaseUrl( asset );
         addSuffix( asset );
         
-        event.emit( 'stamp', asset );
+        event.emit( STAMP, asset );
     };
     
     
-    event.on( 'resolve', parseResolve );
-    event.on( 'stamp', addStamp );
+    event.on( RESOLVE, parseResolve );
+    event.on( STAMP, addStamp );
     event.on( 'id2url', id2url );
     
 } );

@@ -31,6 +31,9 @@ fmd( 'request', ['global','config','event'],
     var rStyle = /\.css(?:\?|$)/i,
         rReadyStates = /loaded|complete/,
         rLoadXdSheetError = /security|denied/i;
+    
+    var EVENT_REQUESTED = 'requested',
+        CHARSET = 'charset';
         
     var isOldWebKit = ( global.navigator.userAgent.replace(/.*AppleWebKit\/(\d+)\..*/, "$1") ) * 1 < 536;
     
@@ -51,7 +54,7 @@ fmd( 'request', ['global','config','event'],
             node.src = asset.url;
         }
         
-        config.get('charset') && ( node.charset = config.get('charset') );
+        config.get(CHARSET) && ( node.charset = config.get(CHARSET) );
         
         event.emit( 'createNode', node, asset );
         
@@ -77,7 +80,7 @@ fmd( 'request', ['global','config','event'],
         setTimeout( function(){
             if ( isLoaded ){
                 callback && callback();
-                event.emit( 'requested', asset );
+                event.emit( EVENT_REQUESTED, asset );
             } else {
                 poll( node, callback, asset );
             }
@@ -90,7 +93,7 @@ fmd( 'request', ['global','config','event'],
         if ( isSupportOnload ){
             node.onload = function(){
                 finish();
-                event.emit( 'requested', asset );
+                event.emit( EVENT_REQUESTED, asset );
             };
             node.onerror = function(){
                 finish();
@@ -100,7 +103,7 @@ fmd( 'request', ['global','config','event'],
             node.onreadystatechange = function(){
                 if ( rReadyStates.test( node.readyState ) ){
                     finish();
-                    event.emit( 'requested', asset );
+                    event.emit( EVENT_REQUESTED, asset );
                 }
             };
         }

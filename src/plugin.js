@@ -14,6 +14,8 @@ fmd( 'plugin', ['cache','lang','event','config','when','remote'],
     
     var rPlugin = /(.+)!(.+)/;
     
+    var ANALYZE = 'analyze';
+    
     
     var plugin = {
         defaultPlugin: 'async',
@@ -95,10 +97,10 @@ fmd( 'plugin', ['cache','lang','event','config','when','remote'],
             this.plugin = val;
             
             if ( val === true ){
-                event.on( 'analyze', onAnalyze );
+                event.on( ANALYZE, onAnalyze );
                 remote.bring = router;
             } else {
-                event.off( 'analyze', onAnalyze );
+                event.off( ANALYZE, onAnalyze );
                 remote.bring = remote.get;
             }
         }

@@ -10,14 +10,16 @@ fmd( 'alias', ['config','event'],
     function( config, event ){
     'use strict';
     
+    var ALIAS = 'alias';
+    
     config.register({
-        keys: 'alias',
+        keys: ALIAS,
         name: 'object'
     });
     
-    event.on( 'alias', function( meta ){
+    event.on( ALIAS, function( meta ){
         
-        var aliases = config.get('alias'),
+        var aliases = config.get(ALIAS),
             alias;
         
         if ( aliases && ( alias = aliases[meta.id] ) ){
