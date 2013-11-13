@@ -31,7 +31,7 @@ define(function(){
             
             rRoot.test( id ) && ( id = 'tests/' + id );
             
-            id === 'fmd/console' && ( id = location.pathname.indexOf('dist') ? 'dist/console' : 'src/console' );
+            id === 'fmd/console' && ( id = location.pathname.indexOf('dist') ? 'dist/fmd/console' : 'src/console' );
             
             return id;
         },
