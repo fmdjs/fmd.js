@@ -1,0 +1,1 @@
+fmd("async",["config","module","remote"],function(n,t,e){var i=t.prototype.autocompile,r=function(){var n=this;n.unnamed()&&e.fetch(n.deps,function(){n.compile()})};n.register({keys:"async",rule:function(n,e,u){u=!!u,n!==u&&(this.async=u,t.prototype.autocompile=u===!0?r:i)}}).set({async:!0})});

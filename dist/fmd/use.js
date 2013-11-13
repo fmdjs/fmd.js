@@ -1,0 +1,1 @@
+fmd("use",["lang","event","remote"],function(e,n,t){n.on("makeRequire",function(r,i){r.use=function(o,u){e.isArray(o)||(o=[o]),n.emit("use",o,i),t.fetch(o,function(n){var t=e.map(n,function(e){return r(e.id)});u&&u.apply(null,t)})}})});

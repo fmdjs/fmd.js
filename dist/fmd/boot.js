@@ -1,0 +1,2 @@
+/*! fmd.js v0.2.0 | http://fmdjs.org/ | MIT */
+(function(n){if(!n.fmd){var t={},r=function(n){return t[n]},u=function(n,u,c){if(!t[n]){if(c||(c=u,u=[]),"function"==typeof c){for(var e=[],f=0,i=u.length;i>f;f++)e.push(r(u[f]));c=c.apply(null,e)}t[n]=c||1}};u.version="0.2.0",u.cache={},u("global",n),u("require",function(){return r}),u("env",function(){return u}),u("cache",function(){return u.cache}),n.fmd=u}})(this);
