@@ -8,6 +8,31 @@ module.exports = function( grunt ){
     
     var bannerTpl = '/*! fmd.js v<%= pkg.version %> | http://fmdjs.org/ | MIT */\n';
     
+    var baseSource = [
+        'src/boot.js',
+        'src/lang.js',
+        'src/event.js',
+        'src/config.js',
+        'src/module.js',
+        'src/alias.js'
+    ],
+    defaultSource = baseSource.concat([
+        'src/id2url.js',
+        'src/assets.js',
+        'src/when.js',
+        'src/request.js',
+        'src/loader.js',
+        'src/remote.js',
+        'src/use.js',
+        'src/async.js',
+        'src/logger.js'
+    ]),
+    aioSource = defaultSource.concat([
+        'src/plugin.js',
+        'src/preload.js',
+        'src/non.js'
+    ]);
+    
     grunt.initConfig({
 
         pkg: grunt.file.readJSON('package.json'),
@@ -22,72 +47,29 @@ module.exports = function( grunt ){
             clear: ['dist']
         },
         concat: {
-            aio: {
+            base: {
                 options: {
                     separator: '\n\n',
                     banner: bannerTpl
                 },
-                src: [
-                    'src/boot.js',
-                    'src/lang.js',
-                    'src/event.js',
-                    'src/config.js',
-                    'src/module.js',
-                    'src/alias.js',
-                    'src/id2url.js',
-                    'src/assets.js',
-                    'src/when.js',
-                    'src/request.js',
-                    'src/loader.js',
-                    'src/remote.js',
-                    'src/use.js',
-                    'src/async.js',
-                    'src/logger.js',
-                    'src/plugin.js',
-                    'src/preload.js',
-                    'src/non.js',
-                    'src/combo.js'
-                ],
-                dest: 'dist/fmd-aio-debug.js'
+                src: baseSource,
+                dest: 'dist/fmd-base-debug.js'
             },
             fmd: {
                 options: {
                     separator: '\n\n',
                     banner: bannerTpl
                 },
-                src: [
-                    'src/boot.js',
-                    'src/lang.js',
-                    'src/event.js',
-                    'src/config.js',
-                    'src/module.js',
-                    'src/alias.js',
-                    'src/id2url.js',
-                    'src/assets.js',
-                    'src/when.js',
-                    'src/request.js',
-                    'src/loader.js',
-                    'src/remote.js',
-                    'src/use.js',
-                    'src/async.js',
-                    'src/logger.js'
-                ],
+                src: defaultSource,
                 dest: 'dist/fmd-debug.js'
             },
-            base: {
+            aio: {
                 options: {
                     separator: '\n\n',
                     banner: bannerTpl
                 },
-                src: [
-                    'src/boot.js',
-                    'src/lang.js',
-                    'src/event.js',
-                    'src/config.js',
-                    'src/module.js',
-                    'src/alias.js'
-                ],
-                dest: 'dist/fmd-base-debug.js'
+                src: aioSource,
+                dest: 'dist/fmd-aio-debug.js'
             }
         },
         replace: {
@@ -163,6 +145,14 @@ module.exports = function( grunt ){
                 }
             }
         },
+        copy: {
+            combo: {
+                files: {
+                    'dist/plugin/combo.js': ['dist/fmd/combo.js'],
+                    'dist/plugin/combo-debug.js': ['src/combo.js']
+                }
+            }
+        },
         markdown: {}
 
     });
@@ -170,11 +160,12 @@ module.exports = function( grunt ){
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-replace');
     grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-contrib-concat')
+    grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-markdown');
     grunt.loadNpmTasks('grunt-contrib-clean');
 
-    grunt.registerTask('build', ['jshint','clean','concat','replace:all','uglify','replace:dist']);
+    grunt.registerTask('build', ['jshint','clean','concat','replace:all','uglify','replace:dist','copy']);
     
     grunt.registerTask('default', ['build']);
 
