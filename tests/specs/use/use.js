@@ -27,6 +27,26 @@ describe( 'fmd/use', function(){
             });
         } );
         
+        it( '无异步使用模块', function(){
+            var a;
+            
+            //runs(function(){
+                define(['require'],function(require){
+                    require.use( [], function(A){
+                        a = 'gju0y6t';
+                    } );
+               } );
+            //});
+            
+            //waitsFor(function(){
+            //    return !!a;
+            //});
+            
+            //runs(function(){
+                expect(a).toEqual('gju0y6t');
+            //});
+        } );
+        
         it( '异步使用模块，无回调', function(){
             window.specsUseO = 0;
             
