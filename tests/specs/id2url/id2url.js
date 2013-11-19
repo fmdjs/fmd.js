@@ -8,8 +8,11 @@ fmd( 'specs/id2url', ['event','config'], function( event, config ){
     describe( 'fmd/id2url', function(){
         
         var id2url = function( asset ){
-                event.emit( 'id2url', asset );
-            };
+            event.emit( 'id2url', asset );
+        };
+        var alias = function( asset ){
+            event.emit( 'alias', asset );
+        };
         
         var baseUrl = config.get('baseUrl');
         
@@ -38,7 +41,9 @@ fmd( 'specs/id2url', ['event','config'], function( event, config ){
                 }
             });
             
+            alias(a);
             id2url(a);
+            alias(b);
             id2url(b);
             
             expect(a.url).toEqual(baseUrl+'gbnjoe.js');

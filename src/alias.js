@@ -19,7 +19,7 @@ fmd( 'alias', ['config','event'],
     
     event.on( ALIAS, function( meta ){
         
-        var aliases = config.get(ALIAS),
+        var aliases = config.get( ALIAS ),
             alias;
         
         if ( aliases && ( alias = aliases[meta.id] ) ){

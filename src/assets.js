@@ -14,26 +14,28 @@ fmd( 'assets', ['cache','lang','event','config','module'],
         id2urlMap = {};
     
     var assets = {
-        make: function( id ){
-            
-            if ( id2urlMap[id] ){
-                return assetsCache[ id2urlMap[id] ];
-            }
+        make: function( id, meta ){
             
             var asset = { id: id };
-            
             event.emit( 'analyze', asset );
+            event.emit( 'relative', asset, meta );
+            event.emit( 'alias', asset );
+            
+            if ( id2urlMap[asset.id] ){
+                return assetsCache[ id2urlMap[asset.id] ];
+            }
             
             Module.has( asset.id ) ? ( asset.url = asset.id ) : event.emit( 'id2url', asset );
             
-            id2urlMap[id] = asset.url;
+            id2urlMap[asset.id] = asset.url;
             
             return ( assetsCache[asset.url] = asset );
         },
         
-        group: function( ids ){
-            return lang.map( ids, function( id ){
-                return assets.make( id );
+        group: function( meta ){
+            
+            return lang.map( meta.deps, function( id ){
+                return assets.make( id, meta );
             } );
         }
     };

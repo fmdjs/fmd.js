@@ -34,10 +34,7 @@ fmd( 'module', ['global','env','cache','lang','event'],
     var keyModules = {
         'require': function( mod ){
             
-            mod.require = function( id ){
-                
-                return Module.require( id );
-            };
+            mod.require || Module.makeRequire( mod );
             
             event.emit( 'makeRequire', mod.require, mod );
             
@@ -99,7 +96,12 @@ fmd( 'module', ['global','env','cache','lang','event'],
             if ( lang.isArray( deps ) ){
                 lang.forEach( deps, function( id ){
                     var mid, hook;
-                    mid = ( hook = keyModules[id] ) ? hook( mod ) : Module.require( id );
+                    if ( hook = keyModules[id] ){
+                        mid = hook( mod );
+                    } else {
+                        mod.require || Module.makeRequire( mod );
+                        mid = mod.require( id );
+                    }
                     
                     list.push( mid );
                 } );
@@ -145,16 +147,20 @@ fmd( 'module', ['global','env','cache','lang','event'],
     
     Module.get = function( id ){
         
-        var meta = { id: id };
-        
-        event.emit( 'alias', meta );
-        
-        return modulesCache[meta.id];
+        return modulesCache[id];
     };
     
     Module.has = function( id ){
         
         return ( Module.get( id ) || keyModules[id] ) ? true : false;
+    };
+    
+    Module.deepHas = function( id ){
+        
+        var meta = { id: id };
+        event.emit( 'alias', meta );
+        
+        return Module.has( meta.id );
     };
     
     Module.save = function( mod ){
@@ -183,6 +189,18 @@ fmd( 'module', ['global','env','cache','lang','event'],
         return mod.exports;
     };
     
+    Module.makeRequire = function( mod ){
+        
+        mod.require = function( id ){
+            
+            var meta = { id: id };
+            event.emit( 'relative', meta, mod );
+            event.emit( 'alias', meta );
+            
+            return Module.require( meta.id );
+        };
+    };
+    
     Module.define = function( id, deps, factory ){
         
         var argsLength = arguments.length;
@@ -199,7 +217,7 @@ fmd( 'module', ['global','env','cache','lang','event'],
             }
         }
         
-        if ( Module.has( id ) ){
+        if ( Module.deepHas( id ) ){
             event.emit( 'existed', { id: id } );
             return null;
         }

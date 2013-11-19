@@ -9,7 +9,7 @@ fmd( 'specs/remote', ['remote'], function(remote){
         it( '传空', function(){
             var a,b;
             
-            remote.fetch([],function(group){
+            remote.fetch({deps:[]},function(group){
                 a = '6ftygui';
                 b = group.length;
             });
@@ -24,7 +24,7 @@ fmd( 'specs/remote', ['remote'], function(remote){
             
             runs(function(){
                 var deps = ['specs/remote/a','specs/remote/d','specs/remote/l'];
-                remote.fetch( deps, function( group ){
+                remote.fetch( {deps:deps}, function( group ){
                     define(deps,function(A,B,C){
                         a = A;
                         b = B;
@@ -57,12 +57,12 @@ fmd( 'specs/remote', ['remote'], function(remote){
             window.specsRemoteB = 0;
             
             runs(function(){
-                remote.fetch(['specs/remote/b'],function(){
+                remote.fetch({deps:['specs/remote/b']},function(){
                     define(['specs/remote/b'],function(){
                         a = window.specsRemoteB;
                     });
                 });
-                remote.fetch(['specs/remote/b','specs/remote/c'],function(){
+                remote.fetch({deps:['specs/remote/b','specs/remote/c']},function(){
                     define(['specs/remote/b','specs/remote/c'],function(A,B){
                         b = window.specsRemoteB;
                         c = B;
@@ -85,7 +85,7 @@ fmd( 'specs/remote', ['remote'], function(remote){
             var a;
             
             runs(function(){
-                remote.fetch(['specs/remote/k'],function(){
+                remote.fetch({deps:['specs/remote/k']},function(){
                     define(['specs/remote/k'],function(A){
                         a = A;
                     });
@@ -109,7 +109,7 @@ fmd( 'specs/remote', ['remote'], function(remote){
             //     f21 > h
             runs(function(){
                 var deps = ['specs/remote/f','specs/remote/g','specs/remote/h'];
-                remote.fetch( deps, function(){
+                remote.fetch( {deps:deps}, function(){
                     define(deps,function(A,B,C){
                         a = A;
                         b = B;
@@ -141,7 +141,7 @@ fmd( 'specs/remote', ['remote'], function(remote){
             });
             
             runs(function(){
-                remote.fetch(['specs/remote/m'],function(){
+                remote.fetch({deps:['specs/remote/m']},function(){
                     define(['specs/remote/m'],function(A){
                         a = A;
                     });

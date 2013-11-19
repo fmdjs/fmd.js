@@ -219,15 +219,15 @@ describe( 'fmd/combo', function(){
     } );
     
     describe( '多度依赖', function(){
-        it( '间接依赖', function(){
+        it( '间接依赖，含相对路径', function(){
             var a;
             
             define('specs/combo/m',['specs/combo/m1','specs/combo/n'],function(A,B){
                 return A+'m'+B;
             });
             
-            define('specs/combo/n',['specs/combo/n1'],function(A){
-                return A+'n';
+            define('specs/combo/n',['specs/combo/n1','./n2'],function(A,B){
+                return A+'n'+B;
             });
             
             runs(function(){
@@ -241,7 +241,7 @@ describe( 'fmd/combo', function(){
             });
             
             runs(function(){
-                expect(a).toEqual('m1mn1n');
+                expect(a).toEqual('m1mn1nn2');
             });
         } );
         

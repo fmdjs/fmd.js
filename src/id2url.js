@@ -40,7 +40,7 @@ fmd( 'id2url', ['global','event','config'],
     
     var parseResolve = function( asset ){
             
-        var resolve = config.get(RESOLVE),
+        var resolve = config.get( RESOLVE ),
             url;
         
         if ( resolve ){
@@ -61,7 +61,7 @@ fmd( 'id2url', ['global','event','config'],
         rAbsolute.test( asset.url ) || ( asset.url = config.get('baseUrl') + asset.url );
     },
     
-    addSuffix = function( asset ){
+    addExtname = function( asset ){
         
         var url = asset.url;
         
@@ -71,7 +71,7 @@ fmd( 'id2url', ['global','event','config'],
     addStamp = function( asset ){
             
         var t = config.get('hasStamp') ? TIME_STAMP : null,
-            stamp = config.get(STAMP);
+            stamp = config.get( STAMP );
             
         if ( stamp ){
             for ( var key in stamp ){
@@ -87,11 +87,10 @@ fmd( 'id2url', ['global','event','config'],
     
     id2url = function( asset ){
         
-        event.emit( 'alias', asset );
         event.emit( RESOLVE, asset );
         
         addBaseUrl( asset );
-        addSuffix( asset );
+        addExtname( asset );
         
         event.emit( STAMP, asset );
     };

@@ -45,7 +45,7 @@ fmd( 'event', ['env','cache'],
             if ( list ){
                 if ( callback ){
                     for ( var i = list.length - 1; i >= 0; i-- ){
-                        list[i] === callback && list.splice( i, 1 );
+                        ( list[i] === callback ) && list.splice( i, 1 );
                     }
                 } else {
                     delete eventsCache[name];

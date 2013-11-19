@@ -11,7 +11,7 @@ fmd( 'specs/preload', ['assets','preload'], function( assets, preload ){
             var a, a1, a2;
             
             runs(function(){
-                preload( assets.group(['specs/preload/a','specs/preload/a1','specs/preload/a2']), function(){
+                preload( assets.group({deps:['specs/preload/a','specs/preload/a1','specs/preload/a2']}), function(){
                     a = window.specsPreloadA;
                     a1 = window.specsPreloadA1;
                     a2 = window.specsPreloadA2;
@@ -34,13 +34,13 @@ fmd( 'specs/preload', ['assets','preload'], function( assets, preload ){
             var a, b, c, d, e, f, g;
             
             runs(function(){
-                preload( assets.group(['specs/preload/b','specs/preload/b1']), function(){
+                preload( assets.group({deps:['specs/preload/b','specs/preload/b1']}), function(){
                     a = window.specsPreloadB.b;
                     b = window.specsPreloadB.b1;
                     c = window.specsPreloadB1;
                 } );
                 
-                preload( assets.group(['specs/preload/b','specs/preload/b1','specs/preload/b2']), function(){
+                preload( assets.group({deps:['specs/preload/b','specs/preload/b1','specs/preload/b2']}), function(){
                     d = window.specsPreloadB.b;
                     e = window.specsPreloadB1;
                     f = window.specsPreloadB.b2;

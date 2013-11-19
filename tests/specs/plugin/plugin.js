@@ -111,12 +111,12 @@ fmd( 'specs/plugin', ['event','assets','plugin'], function( event, assets, plugi
         } );
         
         it( 'assets.group support analyze', function(){
-            var ids = ['ytr!specs/plugin/b','hgrf!specs/plugin/c','exports'];
-            var group = assets.group( ids );
-            expect(group.length).toEqual(ids.length);
-            expect(group[0]).toEqual(assets.make(ids[0]));
-            expect(group[1]).toEqual(assets.make(ids[1]));
-            expect(group[2]).toEqual(assets.make(ids[2]));
+            var a = {deps:['ytr!specs/plugin/b','hgrf!specs/plugin/c','exports']};
+            var group = assets.group( a );
+            expect(group.length).toEqual(a.deps.length);
+            expect(group[0]).toEqual(assets.make(a.deps[0]));
+            expect(group[1]).toEqual(assets.make(a.deps[1]));
+            expect(group[2]).toEqual(assets.make(a.deps[2]));
         } );
     } );
     
@@ -144,7 +144,7 @@ fmd( 'specs/plugin', ['event','assets','plugin'], function( event, assets, plugi
         
         it( 'plugin async execute', function(){
             var ids = ['specs/plugin/a','specs/plugin/b','specs/plugin/c'],
-                task = plugin.sorting( assets.group( ids ) )[0];
+                task = plugin.sorting( assets.group( {deps:ids} ) )[0];
             
             var a,b,c;
             runs(function(){
@@ -173,7 +173,7 @@ fmd( 'specs/plugin', ['event','assets','plugin'], function( event, assets, plugi
             define('specs/plugin/e',function(){ return 'e';});
             
             var ids = ['specs/plugin/d','specs/plugin/e','specs/plugin/f','specs/plugin/g'],
-                task = plugin.sorting( assets.group(ids) )[0];
+                task = plugin.sorting( assets.group({deps:ids}) )[0];
             
             var d,e,f,g;
             runs(function(){

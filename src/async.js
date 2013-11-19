@@ -17,7 +17,7 @@ fmd( 'async', ['config','module','remote'],
         var mod = this;
         
         if ( mod.unnamed() ){
-            remote.fetch( mod.deps, function(){
+            remote.fetch( mod, function(){
                 mod.compile();
             } );
         }

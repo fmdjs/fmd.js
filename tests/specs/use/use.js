@@ -159,6 +159,30 @@ describe( 'fmd/use', function(){
                 expect(b).toEqual('specs-use-l');
             });
         } );
+        
+        it( '使用相对路径', function(){
+            var a,b;
+            
+            define('specs/use/p',['require'],function(require){
+                require.use(['./p1','./p2'],function(A,B){
+                    a = A;
+                    b = B;
+                });
+            });
+            
+            runs(function(){
+                define(['specs/use/p'],function(){});
+            });
+            
+            waitsFor(function(){
+                return !!a && !!b;
+            });
+            
+            runs(function(){
+                expect(a).toEqual('specs-use-p1');
+                expect(b).toEqual('specs-use-p2');
+            });
+        } );
     } );
     
     describe( 'require.use支持循环依赖', function(){
@@ -185,7 +209,7 @@ describe( 'fmd/use', function(){
         it( '多度依赖', function(){
             var a, b, c;
             // e > f1 > f
-            // f21 > f2 > 
+            // f22> f21 > f2 > 
             // f1 > g1 > g
             //     f21 > h
             runs(function(){
@@ -203,9 +227,9 @@ describe( 'fmd/use', function(){
             });
             
             runs(function(){
-                expect(a).toEqual('e1ef1f21f2f');
+                expect(a).toEqual('e1ef1ghi-f21f2f');
                 expect(b).toEqual('e1ef1g1g');
-                expect(c).toEqual('f21h');
+                expect(c).toEqual('ghi-f21h');
             });
         } );
         

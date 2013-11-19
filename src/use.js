@@ -6,8 +6,8 @@
  * */
 
 
-fmd( 'use', ['lang','event','remote'],
-    function( lang, event, remote ){
+fmd( 'use', ['lang','event','module','remote'],
+    function( lang, event, Module, remote ){
     'use strict';
     
     event.on( 'makeRequire', function( require, mod ){
@@ -16,11 +16,9 @@ fmd( 'use', ['lang','event','remote'],
             
             lang.isArray( ids ) || ( ids = [ids] );
             
-            event.emit( 'use', ids, mod );
-            
-            remote.fetch( ids, function( assetsGroup ){
-                var args = lang.map( assetsGroup, function( asset ){
-                    return require( asset.id );
+            remote.fetch( { id: mod.id, deps: ids }, function( group ){
+                var args = lang.map( group, function( asset ){
+                    return Module.require( asset.id );
                 } );
                 
                 callback && callback.apply( null, args );

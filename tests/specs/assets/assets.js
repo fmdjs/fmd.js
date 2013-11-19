@@ -26,12 +26,12 @@ fmd( 'specs/assets', ['assets','event'], function( assets, event ){
         } );
         
         it( 'assets.group', function(){
-            var ids = ['specs/assets/b','specs/assets/c','exports'];
-            var group = assets.group( ids );
+            var a = { deps: ['specs/assets/b','specs/assets/c','exports'] };
+            var group = assets.group( a );
             expect(group.length).toEqual(3);
-            expect(group[0]).toEqual(assets.make(ids[0]));
-            expect(group[1]).toEqual(assets.make(ids[1]));
-            expect(group[2]).toEqual(assets.make(ids[2]));
+            expect(group[0]).toEqual(assets.make(a.deps[0]));
+            expect(group[1]).toEqual(assets.make(a.deps[1]));
+            expect(group[2]).toEqual(assets.make(a.deps[2]));
         } );
     } );
 } );

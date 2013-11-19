@@ -28,7 +28,7 @@ fmd( 'specs/non', ['plugin','assets'], function(plugin,assets){
         
         it( 'non execute', function(){
             var ids = ['non!specs/non/c','non!specs/non/c1','non!specs/non/c2'],
-                task = plugin.sorting( assets.group( ids ) )[0];
+                task = plugin.sorting( assets.group( {deps:ids} ) )[0];
             
             var a,b,c,d,e;
             runs(function(){
@@ -133,7 +133,7 @@ describe( 'deps non支持', function(){
         });
     } );
     
-    it( 'fmd、non-fmd模块共存，并二度依赖', function(){
+    it( 'fmd、non-fmd模块共存，并二度依赖，含相对路径', function(){
         
         var a,b,c,d,e;
         
@@ -152,7 +152,7 @@ describe( 'deps non支持', function(){
         });
         
         runs(function(){
-            expect(a).toEqual(152);
+            expect(a).toEqual(184);
             expect(c).toEqual(67);
             expect(b).toEqual('efferriuin');
             expect(d.a).toEqual('efferr');
@@ -238,6 +238,26 @@ describe( 'require.use non支持', function(){
             expect(e).toEqual(1000);
             expect(f).toEqual('specs-non-e2');
             expect(g).toEqual(1275);
+        });
+    } );
+    
+    it( 'non-fmd文件，相对路径依赖', function(){
+        var a;
+        define('specs/non/i',['require'],function(require){
+            require.use(['non!./i1','non!./i2'],function(){
+                a = specsNonI;
+            });
+        });
+        runs(function(){
+            define(['specs/non/i'],function(){});
+        });
+        
+        waitsFor(function(){
+            return !!a;
+        });
+        
+        runs(function(){
+            expect(a).toEqual(97);
         });
     } );
 } );

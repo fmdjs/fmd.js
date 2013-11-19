@@ -1,1 +1,1 @@
-fmd("use",["lang","event","remote"],function(e,n,t){n.on("makeRequire",function(r,i){r.use=function(o,u){e.isArray(o)||(o=[o]),n.emit("use",o,i),t.fetch(o,function(n){var t=e.map(n,function(e){return r(e.id)});u&&u.apply(null,t)})}})});
+fmd("use",["lang","event","module","remote"],function(e,n,t,r){n.on("makeRequire",function(n,i){n.use=function(n,o){e.isArray(n)||(n=[n]),r.fetch({id:i.id,deps:n},function(n){var r=e.map(n,function(e){return t.require(e.id)});o&&o.apply(null,r)})}})});

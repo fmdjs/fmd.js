@@ -192,7 +192,7 @@ fmd( 'event', ['env','cache'],
             if ( list ){
                 if ( callback ){
                     for ( var i = list.length - 1; i >= 0; i-- ){
-                        list[i] === callback && list.splice( i, 1 );
+                        ( list[i] === callback ) && list.splice( i, 1 );
                     }
                 } else {
                     delete eventsCache[name];
@@ -366,10 +366,7 @@ fmd( 'module', ['global','env','cache','lang','event'],
     var keyModules = {
         'require': function( mod ){
             
-            mod.require = function( id ){
-                
-                return Module.require( id );
-            };
+            mod.require || Module.makeRequire( mod );
             
             event.emit( 'makeRequire', mod.require, mod );
             
@@ -431,7 +428,12 @@ fmd( 'module', ['global','env','cache','lang','event'],
             if ( lang.isArray( deps ) ){
                 lang.forEach( deps, function( id ){
                     var mid, hook;
-                    mid = ( hook = keyModules[id] ) ? hook( mod ) : Module.require( id );
+                    if ( hook = keyModules[id] ){
+                        mid = hook( mod );
+                    } else {
+                        mod.require || Module.makeRequire( mod );
+                        mid = mod.require( id );
+                    }
                     
                     list.push( mid );
                 } );
@@ -477,16 +479,20 @@ fmd( 'module', ['global','env','cache','lang','event'],
     
     Module.get = function( id ){
         
-        var meta = { id: id };
-        
-        event.emit( 'alias', meta );
-        
-        return modulesCache[meta.id];
+        return modulesCache[id];
     };
     
     Module.has = function( id ){
         
         return ( Module.get( id ) || keyModules[id] ) ? true : false;
+    };
+    
+    Module.deepHas = function( id ){
+        
+        var meta = { id: id };
+        event.emit( 'alias', meta );
+        
+        return Module.has( meta.id );
     };
     
     Module.save = function( mod ){
@@ -515,6 +521,18 @@ fmd( 'module', ['global','env','cache','lang','event'],
         return mod.exports;
     };
     
+    Module.makeRequire = function( mod ){
+        
+        mod.require = function( id ){
+            
+            var meta = { id: id };
+            event.emit( 'relative', meta, mod );
+            event.emit( 'alias', meta );
+            
+            return Module.require( meta.id );
+        };
+    };
+    
     Module.define = function( id, deps, factory ){
         
         var argsLength = arguments.length;
@@ -531,7 +549,7 @@ fmd( 'module', ['global','env','cache','lang','event'],
             }
         }
         
-        if ( Module.has( id ) ){
+        if ( Module.deepHas( id ) ){
             event.emit( 'existed', { id: id } );
             return null;
         }
@@ -551,6 +569,66 @@ fmd( 'module', ['global','env','cache','lang','event'],
     
     
     return Module;
+    
+} );
+
+
+/**
+ * @module fmd/relative
+ * @author Edgar <mail@edgar.im>
+ * @version v0.1
+ * @date 131118
+ * */
+
+
+fmd( 'relative', ['lang','event','module'],
+    function( lang, event, Module ){
+    
+    
+    var rCwd = /.*\//,
+        rDot = /\/\.\//,
+        rDoubleDot = /[^\/]+\/\.\.\//;
+    
+    var relative = {
+        cwd: function( id ){
+            
+            return id.match( rCwd )[0];
+        },
+        
+        isDotStart: function( id ){
+            
+            return id.charAt(0) === '.';
+        },
+        
+        hasSlash: function( id ){
+            
+            return id.lastIndexOf('/') > 0;
+        },
+        
+        resolve: function( from, to ){
+            
+            var id = ( from + to ).replace( rDot, '/' );
+            
+            while ( id.match( rDoubleDot ) ){
+                id = id.replace( rDoubleDot, '' );
+            }
+            
+            return id;
+        }
+    };
+    
+    
+    event.on( 'relative', function( meta, mod ){
+        
+        if ( relative.isDotStart( meta.id ) && relative.hasSlash( mod.id ) ){
+            mod._cwd || ( mod._cwd = relative.cwd( mod.id ) );
+            
+            meta.id = relative.resolve( mod._cwd, meta.id );
+        }
+    } );
+    
+    
+    return relative;
     
 } );
 
@@ -576,7 +654,7 @@ fmd( 'alias', ['config','event'],
     
     event.on( ALIAS, function( meta ){
         
-        var aliases = config.get(ALIAS),
+        var aliases = config.get( ALIAS ),
             alias;
         
         if ( aliases && ( alias = aliases[meta.id] ) ){

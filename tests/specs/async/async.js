@@ -113,6 +113,24 @@ describe( 'fmd/async', function(){
             });
         } );
         
+        it( '相对路径依赖', function(){
+            var a;
+            define('specs/async/o',['./o1','./o2'],function(A,B){ return A + B; });
+            runs(function(){
+                define(['specs/async/o'],function(A){
+                    a = A;
+                });
+            });
+            
+            waitsFor(function(){
+                return !!a;
+            });
+            
+            runs(function(){
+                expect(a).toEqual('7iu6y5rg23ergh6543r');
+            });
+        } );
+        
         it( '已存在的依赖', function(){
             var a;
             

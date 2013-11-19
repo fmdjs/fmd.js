@@ -192,7 +192,7 @@ fmd( 'event', ['env','cache'],
             if ( list ){
                 if ( callback ){
                     for ( var i = list.length - 1; i >= 0; i-- ){
-                        list[i] === callback && list.splice( i, 1 );
+                        ( list[i] === callback ) && list.splice( i, 1 );
                     }
                 } else {
                     delete eventsCache[name];
@@ -366,10 +366,7 @@ fmd( 'module', ['global','env','cache','lang','event'],
     var keyModules = {
         'require': function( mod ){
             
-            mod.require = function( id ){
-                
-                return Module.require( id );
-            };
+            mod.require || Module.makeRequire( mod );
             
             event.emit( 'makeRequire', mod.require, mod );
             
@@ -431,7 +428,12 @@ fmd( 'module', ['global','env','cache','lang','event'],
             if ( lang.isArray( deps ) ){
                 lang.forEach( deps, function( id ){
                     var mid, hook;
-                    mid = ( hook = keyModules[id] ) ? hook( mod ) : Module.require( id );
+                    if ( hook = keyModules[id] ){
+                        mid = hook( mod );
+                    } else {
+                        mod.require || Module.makeRequire( mod );
+                        mid = mod.require( id );
+                    }
                     
                     list.push( mid );
                 } );
@@ -477,16 +479,20 @@ fmd( 'module', ['global','env','cache','lang','event'],
     
     Module.get = function( id ){
         
-        var meta = { id: id };
-        
-        event.emit( 'alias', meta );
-        
-        return modulesCache[meta.id];
+        return modulesCache[id];
     };
     
     Module.has = function( id ){
         
         return ( Module.get( id ) || keyModules[id] ) ? true : false;
+    };
+    
+    Module.deepHas = function( id ){
+        
+        var meta = { id: id };
+        event.emit( 'alias', meta );
+        
+        return Module.has( meta.id );
     };
     
     Module.save = function( mod ){
@@ -515,6 +521,18 @@ fmd( 'module', ['global','env','cache','lang','event'],
         return mod.exports;
     };
     
+    Module.makeRequire = function( mod ){
+        
+        mod.require = function( id ){
+            
+            var meta = { id: id };
+            event.emit( 'relative', meta, mod );
+            event.emit( 'alias', meta );
+            
+            return Module.require( meta.id );
+        };
+    };
+    
     Module.define = function( id, deps, factory ){
         
         var argsLength = arguments.length;
@@ -531,7 +549,7 @@ fmd( 'module', ['global','env','cache','lang','event'],
             }
         }
         
-        if ( Module.has( id ) ){
+        if ( Module.deepHas( id ) ){
             event.emit( 'existed', { id: id } );
             return null;
         }
@@ -551,6 +569,66 @@ fmd( 'module', ['global','env','cache','lang','event'],
     
     
     return Module;
+    
+} );
+
+
+/**
+ * @module fmd/relative
+ * @author Edgar <mail@edgar.im>
+ * @version v0.1
+ * @date 131118
+ * */
+
+
+fmd( 'relative', ['lang','event','module'],
+    function( lang, event, Module ){
+    
+    
+    var rCwd = /.*\//,
+        rDot = /\/\.\//,
+        rDoubleDot = /[^\/]+\/\.\.\//;
+    
+    var relative = {
+        cwd: function( id ){
+            
+            return id.match( rCwd )[0];
+        },
+        
+        isDotStart: function( id ){
+            
+            return id.charAt(0) === '.';
+        },
+        
+        hasSlash: function( id ){
+            
+            return id.lastIndexOf('/') > 0;
+        },
+        
+        resolve: function( from, to ){
+            
+            var id = ( from + to ).replace( rDot, '/' );
+            
+            while ( id.match( rDoubleDot ) ){
+                id = id.replace( rDoubleDot, '' );
+            }
+            
+            return id;
+        }
+    };
+    
+    
+    event.on( 'relative', function( meta, mod ){
+        
+        if ( relative.isDotStart( meta.id ) && relative.hasSlash( mod.id ) ){
+            mod._cwd || ( mod._cwd = relative.cwd( mod.id ) );
+            
+            meta.id = relative.resolve( mod._cwd, meta.id );
+        }
+    } );
+    
+    
+    return relative;
     
 } );
 
@@ -576,7 +654,7 @@ fmd( 'alias', ['config','event'],
     
     event.on( ALIAS, function( meta ){
         
-        var aliases = config.get(ALIAS),
+        var aliases = config.get( ALIAS ),
             alias;
         
         if ( aliases && ( alias = aliases[meta.id] ) ){
@@ -629,7 +707,7 @@ fmd( 'id2url', ['global','event','config'],
     
     var parseResolve = function( asset ){
             
-        var resolve = config.get(RESOLVE),
+        var resolve = config.get( RESOLVE ),
             url;
         
         if ( resolve ){
@@ -650,7 +728,7 @@ fmd( 'id2url', ['global','event','config'],
         rAbsolute.test( asset.url ) || ( asset.url = config.get('baseUrl') + asset.url );
     },
     
-    addSuffix = function( asset ){
+    addExtname = function( asset ){
         
         var url = asset.url;
         
@@ -660,7 +738,7 @@ fmd( 'id2url', ['global','event','config'],
     addStamp = function( asset ){
             
         var t = config.get('hasStamp') ? TIME_STAMP : null,
-            stamp = config.get(STAMP);
+            stamp = config.get( STAMP );
             
         if ( stamp ){
             for ( var key in stamp ){
@@ -676,11 +754,10 @@ fmd( 'id2url', ['global','event','config'],
     
     id2url = function( asset ){
         
-        event.emit( 'alias', asset );
         event.emit( RESOLVE, asset );
         
         addBaseUrl( asset );
-        addSuffix( asset );
+        addExtname( asset );
         
         event.emit( STAMP, asset );
     };
@@ -709,26 +786,28 @@ fmd( 'assets', ['cache','lang','event','config','module'],
         id2urlMap = {};
     
     var assets = {
-        make: function( id ){
-            
-            if ( id2urlMap[id] ){
-                return assetsCache[ id2urlMap[id] ];
-            }
+        make: function( id, meta ){
             
             var asset = { id: id };
-            
             event.emit( 'analyze', asset );
+            event.emit( 'relative', asset, meta );
+            event.emit( 'alias', asset );
+            
+            if ( id2urlMap[asset.id] ){
+                return assetsCache[ id2urlMap[asset.id] ];
+            }
             
             Module.has( asset.id ) ? ( asset.url = asset.id ) : event.emit( 'id2url', asset );
             
-            id2urlMap[id] = asset.url;
+            id2urlMap[asset.id] = asset.url;
             
             return ( assetsCache[asset.url] = asset );
         },
         
-        group: function( ids ){
-            return lang.map( ids, function( id ){
-                return assets.make( id );
+        group: function( meta ){
+            
+            return lang.map( meta.deps, function( id ){
+                return assets.make( id, meta );
             } );
         }
     };
@@ -887,7 +966,7 @@ fmd( 'request', ['global','config','event'],
             node.src = asset.url;
         }
         
-        config.get(CHARSET) && ( node.charset = config.get(CHARSET) );
+        config.get( CHARSET ) && ( node.charset = config.get( CHARSET ) );
         
         event.emit( 'createNode', node, asset );
         
@@ -1075,9 +1154,9 @@ fmd( 'remote', ['lang','event','module','assets','when','loader'],
     
     var remote = {};
     
-    remote.bring = remote.get = function( assetsGroup, callback ){
+    remote.bring = remote.get = function( group, callback ){
         
-        when.apply( null, lang.map( assetsGroup, function( asset ){
+        when.apply( null, lang.map( group, function( asset ){
             return function( promise ){
                 
                 Module.has( asset.id ) ?
@@ -1088,25 +1167,25 @@ fmd( 'remote', ['lang','event','module','assets','when','loader'],
         } ) ).then( callback );
     };
         
-    remote.fetch = function( ids, callback ){
+    remote.fetch = function( meta, callback ){
         
-        var assetsGroup = assets.group( ids );
+        var group = assets.group( meta );
         
-        event.emit( 'fetch', assetsGroup );
+        event.emit( 'fetch', group );
         
-        remote.bring( assetsGroup, function(){
+        remote.bring( group, function(){
             
-            when.apply( null, lang.map( assetsGroup, function( asset ){
+            when.apply( null, lang.map( group, function( asset ){
                 return function( promise ){
                     
                     var mod = Module.get( asset.id );
                     
-                    mod && !mod.compiled && mod.deps.length ? remote.fetch( mod.deps, function(){
+                    mod && !mod.compiled && mod.deps.length ? remote.fetch( mod, function(){
                         promise.resolve();
                     } ) : promise.resolve();
                 };
             } ) ).then( function(){
-                callback.call( null, assetsGroup );
+                callback.call( null, group );
             } );
         } );
     };
@@ -1125,8 +1204,8 @@ fmd( 'remote', ['lang','event','module','assets','when','loader'],
  * */
 
 
-fmd( 'use', ['lang','event','remote'],
-    function( lang, event, remote ){
+fmd( 'use', ['lang','event','module','remote'],
+    function( lang, event, Module, remote ){
     
     
     event.on( 'makeRequire', function( require, mod ){
@@ -1135,11 +1214,9 @@ fmd( 'use', ['lang','event','remote'],
             
             lang.isArray( ids ) || ( ids = [ids] );
             
-            event.emit( 'use', ids, mod );
-            
-            remote.fetch( ids, function( assetsGroup ){
-                var args = lang.map( assetsGroup, function( asset ){
-                    return require( asset.id );
+            remote.fetch( { id: mod.id, deps: ids }, function( group ){
+                var args = lang.map( group, function( asset ){
+                    return Module.require( asset.id );
                 } );
                 
                 callback && callback.apply( null, args );
@@ -1169,7 +1246,7 @@ fmd( 'async', ['config','module','remote'],
         var mod = this;
         
         if ( mod.unnamed() ){
-            remote.fetch( mod.deps, function(){
+            remote.fetch( mod, function(){
                 mod.compile();
             } );
         }

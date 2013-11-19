@@ -54,7 +54,7 @@ fmd( 'request', ['global','config','event'],
             node.src = asset.url;
         }
         
-        config.get(CHARSET) && ( node.charset = config.get(CHARSET) );
+        config.get( CHARSET ) && ( node.charset = config.get( CHARSET ) );
         
         event.emit( 'createNode', node, asset );
         

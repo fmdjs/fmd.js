@@ -71,9 +71,9 @@ fmd( 'preload', ['global','lang','event','when','request','loader'],
     };
     
     
-    var preloadByAsync = function( assetsGroup, callback ){
+    var preloadByAsync = function( group, callback ){
         
-        when.apply( null, lang.map( assetsGroup, function( asset ){
+        when.apply( null, lang.map( group, function( asset ){
             return function( promise ){
                 asset.isPreload = true;
                 loader( asset, function(){
@@ -83,31 +83,31 @@ fmd( 'preload', ['global','lang','event','when','request','loader'],
         } ) ).then( callback );
     },
     
-    preloadByCache = function( assetsGroup, callback ){
+    preloadByCache = function( group, callback ){
         
-        var rest = assetsGroup.slice( 1 );
+        var rest = group.slice( 1 );
         
         if ( rest.length ){
-            lang.forEach( assetsGroup, function( asset ){
+            lang.forEach( group, function( asset ){
                 if ( !asset.isPreload ){
                     asset.isPreload = true;
                     preRequest( asset );
                 }
             } );
             
-            loader( assetsGroup[0], function(){
+            loader( group[0], function(){
                 preload( rest, callback );
             } );
         } else {
-            loader( assetsGroup[0], callback );
+            loader( group[0], callback );
         }
     },
     
-    preload = function( assetsGroup, callback ){
+    preload = function( group, callback ){
         
         preload = isSupportAsync ? preloadByAsync : preloadByCache;
         
-        preload( assetsGroup, callback );
+        preload( group, callback );
     };
     
     

@@ -12,9 +12,9 @@ fmd( 'remote', ['lang','event','module','assets','when','loader'],
     
     var remote = {};
     
-    remote.bring = remote.get = function( assetsGroup, callback ){
+    remote.bring = remote.get = function( group, callback ){
         
-        when.apply( null, lang.map( assetsGroup, function( asset ){
+        when.apply( null, lang.map( group, function( asset ){
             return function( promise ){
                 
                 Module.has( asset.id ) ?
@@ -25,25 +25,25 @@ fmd( 'remote', ['lang','event','module','assets','when','loader'],
         } ) ).then( callback );
     };
         
-    remote.fetch = function( ids, callback ){
+    remote.fetch = function( meta, callback ){
         
-        var assetsGroup = assets.group( ids );
+        var group = assets.group( meta );
         
-        event.emit( 'fetch', assetsGroup );
+        event.emit( 'fetch', group );
         
-        remote.bring( assetsGroup, function(){
+        remote.bring( group, function(){
             
-            when.apply( null, lang.map( assetsGroup, function( asset ){
+            when.apply( null, lang.map( group, function( asset ){
                 return function( promise ){
                     
                     var mod = Module.get( asset.id );
                     
-                    mod && !mod.compiled && mod.deps.length ? remote.fetch( mod.deps, function(){
+                    mod && !mod.compiled && mod.deps.length ? remote.fetch( mod, function(){
                         promise.resolve();
                     } ) : promise.resolve();
                 };
             } ) ).then( function(){
-                callback.call( null, assetsGroup );
+                callback.call( null, group );
             } );
         } );
     };

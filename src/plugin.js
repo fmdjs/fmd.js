@@ -24,14 +24,14 @@ fmd( 'plugin', ['cache','lang','event','config','when','remote'],
             pluginCache[name] = execute;
         },
         
-        sorting: function( assetsGroup ){
+        sorting: function( group ){
             
             var tasks = [],
                 flag = {},
                 taskIndex,
                 task;
             
-            lang.forEach( assetsGroup, function( asset ){
+            lang.forEach( group, function( asset ){
                 
                 if ( flag[asset.plugin] > -1 ){
                     task = tasks[flag[asset.plugin]];
@@ -71,9 +71,9 @@ fmd( 'plugin', ['cache','lang','event','config','when','remote'],
         !pluginCache[asset.plugin] && ( asset.plugin = plugin.defaultPlugin );
     },
     
-    router = function( assetsGroup, callback ){
+    router = function( group, callback ){
         
-        when.apply( null, lang.map( plugin.sorting( assetsGroup ), function( task ){
+        when.apply( null, lang.map( plugin.sorting( group ), function( task ){
             return function( promise ) {
                 
                 task.execute ? task.execute( function(){

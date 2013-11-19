@@ -63,12 +63,12 @@ fmd( 'combo', ['cache','lang','event','config','module','assets','plugin','when'
         return [ ext, asset._host ].join('_');
     },
     
-    pushGroup = function( meta, assetsGroup ){
+    pushGroup = function( meta, group ){
         
         if ( meta.included.length > 1 || meta.plugin === PLUGIN_COMBO_NON ){
             event.emit( 'stamp', meta );
             comboCache[meta.url] = meta;
-            assetsGroup.push( meta );
+            group.push( meta );
         } else {
             var asset = meta.included[0];
             delete asset.requested;
@@ -80,19 +80,19 @@ fmd( 'combo', ['cache','lang','event','config','module','assets','plugin','when'
     };
     
     
-    var onFetch = function( assetsGroup ){
+    var onFetch = function( group ){
         
-        if ( assetsGroup.length < 2 ){
+        if ( group.length < 2 ){
             return;
         }
         
-        config.get(COMBO_SYNTAX) && ( comboSyntax = config.get(COMBO_SYNTAX) );
-        config.get(COMBO_MAX_LENGTH) && ( comboMaxLength = config.get(COMBO_MAX_LENGTH) );
+        config.get( COMBO_SYNTAX ) && ( comboSyntax = config.get( COMBO_SYNTAX ) );
+        config.get( COMBO_MAX_LENGTH ) && ( comboMaxLength = config.get( COMBO_MAX_LENGTH ) );
         
         var asset, mod, needComboGroup = [];
         
-        for ( var i = 0; i < assetsGroup.length; i++ ){
-            asset = assetsGroup[i];
+        for ( var i = 0; i < group.length; i++ ){
+            asset = group[i];
             
             if ( !( asset.plugin === PLUGIN_ASYNC || asset.plugin === PLUGIN_NON ) || asset.comboed || asset.state || asset.preState  ){
                 continue;
@@ -108,7 +108,7 @@ fmd( 'combo', ['cache','lang','event','config','module','assets','plugin','when'
                 
                 if ( mod && !mod.compiled ){
                     lang.forEach( mod.deps, function( id ){
-                        assetsGroup.push( assets.make( id ) );
+                        group.push( assets.make( id, mod ) );
                     } );
                 }
                 
@@ -121,11 +121,11 @@ fmd( 'combo', ['cache','lang','event','config','module','assets','plugin','when'
         }
         
         if ( needComboGroup.length ){
-            extract( needComboGroup, assetsGroup );
+            extract( needComboGroup, group );
         }
     },
     
-    extract = function( needComboGroup, assetsGroup ){
+    extract = function( needComboGroup, group ){
         
         var id, meta, comboUrl, cacheId,
             cache = {};
@@ -149,7 +149,7 @@ fmd( 'combo', ['cache','lang','event','config','module','assets','plugin','when'
             comboUrl = makeUrl( meta, asset );
             
             if ( comboUrl.length > comboMaxLength ){
-                pushGroup( meta, assetsGroup );
+                pushGroup( meta, group );
                 delete cache[id];
                 
                 meta = makeMeta( id, asset );
@@ -167,7 +167,7 @@ fmd( 'combo', ['cache','lang','event','config','module','assets','plugin','when'
         } );
         
         for ( cacheId in cache ){
-            pushGroup( cache[cacheId], assetsGroup );
+            pushGroup( cache[cacheId], group );
         }
     },
     

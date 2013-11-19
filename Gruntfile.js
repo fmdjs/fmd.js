@@ -14,6 +14,7 @@ module.exports = function( grunt ){
         'src/event.js',
         'src/config.js',
         'src/module.js',
+        'src/relative.js',
         'src/alias.js'
     ],
     defaultSource = baseSource.concat([
