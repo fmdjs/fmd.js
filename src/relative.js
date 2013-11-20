@@ -45,7 +45,7 @@ fmd( 'relative', ['lang','event','module'],
     
     event.on( 'relative', function( meta, mod ){
         
-        if ( relative.isDotStart( meta.id ) && relative.hasSlash( mod.id ) ){
+        if ( relative.isDotStart( meta.id ) && mod && relative.hasSlash( mod.id ) ){
             mod._cwd || ( mod._cwd = relative.cwd( mod.id ) );
             
             meta.id = relative.resolve( mod._cwd, meta.id );
