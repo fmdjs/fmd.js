@@ -482,17 +482,16 @@ fmd( 'module', ['global','env','cache','lang','event'],
         return modulesCache[id];
     };
     
-    Module.has = function( id ){
+    Module.has = function( id, deep ){
         
-        return ( Module.get( id ) || keyModules[id] ) ? true : false;
-    };
-    
-    Module.deepHas = function( id ){
+        if ( keyModules[id] ){
+            return true;
+        }
         
         var meta = { id: id };
-        event.emit( 'alias', meta );
+        deep && event.emit( 'alias', meta );
         
-        return Module.has( meta.id );
+        return modulesCache[meta.id] ? true : false;
     };
     
     Module.save = function( mod ){
@@ -549,7 +548,7 @@ fmd( 'module', ['global','env','cache','lang','event'],
             }
         }
         
-        if ( Module.deepHas( id ) ){
+        if ( Module.has( id, true ) ){
             event.emit( 'existed', { id: id } );
             return null;
         }

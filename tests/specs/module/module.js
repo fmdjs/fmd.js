@@ -260,6 +260,6 @@ fmd( 'specs/module', ['module'], function( module ){
         it( 'mod.unnamed', function(){} );
         it( 'mod.compile', function(){} );
         it( 'mod.extract', function(){} );
-        it( 'mod.autoCompile', function(){} );
+        it( 'mod.autocompile', function(){} );
     } );
 } );
