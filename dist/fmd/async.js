@@ -1,1 +1,1 @@
-fmd("async",["config","module","remote"],function(n,e,t){var i=e.prototype.autocompile,r=function(){var n=this;n.unnamed()&&t.fetch(n,function(){n.compile()})};n.register({keys:"async",rule:function(n,t,u){u=!!u,n!==u&&(this.async=u,e.prototype.autocompile=u===!0?r:i)}}).set({async:!0})});
+fmd("async",["config","module","remote"],function(c,d,e){var f=d.prototype.autocompile,g=function(){var a=this;a.unnamed()&&e.fetch(a,function(){a.compile()})};c.register({keys:"async",rule:function(a,c,b){b=!!b;a!==b&&(this.async=b,d.prototype.autocompile=!0===b?g:f)}}).set({async:!0})});

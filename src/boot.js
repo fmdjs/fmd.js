@@ -2,7 +2,7 @@
  * @module fmd/boot
  * @author Edgar <mail@edgar.im>
  * @version v0.2
- * @date 131023
+ * @date 131124
  * */
 
 
@@ -14,7 +14,8 @@
     }
     
     
-    var partsCache = {};
+    var partsCache = {},
+        parts = [];
     
     var require = function( id ){
         
@@ -43,12 +44,16 @@
         }
         
         partsCache[id] = factory || 1;
+        parts.push( id );
+        
     };
     
     
-    fmd.version = '0.2.0';
+    fmd.version = '@VERSION';
     
-    fmd.cache = {};
+    fmd.cache = {
+        parts: parts
+    };
     
     
     fmd( 'global', global );

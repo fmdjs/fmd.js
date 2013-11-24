@@ -1,21 +1,21 @@
-/*! fmd.js v0.2.0 | http://fmdjs.org/ | MIT */
-/**
+/*! fmd.js v0.2.0 | http://fmdjs.org/ | MIT *//**
  * @module fmd/boot
  * @author Edgar <mail@edgar.im>
  * @version v0.2
- * @date 131023
+ * @date 131124
  * */
 
 
 (function( global ){
-    
+    'use strict';
     
     if ( global.fmd ){
         return;
     }
     
     
-    var partsCache = {};
+    var partsCache = {},
+        parts = [];
     
     var require = function( id ){
         
@@ -44,12 +44,16 @@
         }
         
         partsCache[id] = factory || 1;
+        parts.push( id );
+        
     };
     
     
     fmd.version = '0.2.0';
     
-    fmd.cache = {};
+    fmd.cache = {
+        parts: parts
+    };
     
     
     fmd( 'global', global );
@@ -84,7 +88,7 @@
 
 
 fmd( 'lang', function(){
-    
+    'use strict';
     
     var toString = {}.toString,
         AP = Array.prototype;
@@ -155,7 +159,7 @@ fmd( 'lang', function(){
 
 fmd( 'event', ['env','cache'],
     function( env, cache ){
-    
+    'use strict';
     
     /**
      * Thanks to:
@@ -222,7 +226,7 @@ fmd( 'event', ['env','cache'],
 
 fmd( 'config', ['env','cache','lang'],
     function( env, cache, lang ){
-    
+    'use strict';
     
     var configCache = cache.config = {},
         rulesCache = cache.configRules = {};
@@ -340,7 +344,7 @@ fmd( 'config', ['env','cache','lang'],
 
 fmd( 'module', ['global','env','cache','lang','event'],
     function( global, env, cache, lang, event ){
-    
+    'use strict';
     
     /**
      * Thanks to:
@@ -582,7 +586,7 @@ fmd( 'module', ['global','env','cache','lang','event'],
 
 fmd( 'relative', ['lang','event','module'],
     function( lang, event, Module ){
-    
+    'use strict';
     
     var rCwd = /.*\//,
         rDot = /\/\.\//,
@@ -642,7 +646,7 @@ fmd( 'relative', ['lang','event','module'],
 
 fmd( 'alias', ['config','event'],
     function( config, event ){
-    
+    'use strict';
     
     var ALIAS = 'alias';
     
@@ -674,7 +678,7 @@ fmd( 'alias', ['config','event'],
 
 fmd( 'id2url', ['global','event','config'],
     function( global, event, config ){
-    
+    'use strict';
     
     var rAbsolute = /^https?:\/\//i;
     
@@ -779,7 +783,7 @@ fmd( 'id2url', ['global','event','config'],
 
 fmd( 'assets', ['cache','lang','event','config','module'],
     function( cache, lang, event, config, Module ){
-    
+    'use strict';
     
     var assetsCache = cache.assets = {},
         id2urlMap = {};
@@ -826,7 +830,7 @@ fmd( 'assets', ['cache','lang','event','config','module'],
 
 
 fmd( 'when', function(){
-    
+    'use strict';
     
     /**
      * Thanks to:
@@ -919,7 +923,7 @@ fmd( 'when', function(){
 
 fmd( 'request', ['global','config','event'],
     function( global, config, event ){
-    
+    'use strict';
     
     /**
      * Thanks to:
@@ -1073,7 +1077,7 @@ fmd( 'request', ['global','config','event'],
 
 fmd( 'loader', ['global','event','config','request'],
     function( global, event, config, request ){
-    
+    'use strict';
     
     var STATE_LOADING = 'loading',
         STATE_LOADED = 'loaded',
@@ -1149,7 +1153,7 @@ fmd( 'loader', ['global','event','config','request'],
 
 fmd( 'remote', ['lang','event','module','assets','when','loader'],
     function( lang, event, Module, assets, when, loader ){
-    
+    'use strict';
     
     var remote = {};
     
@@ -1205,7 +1209,7 @@ fmd( 'remote', ['lang','event','module','assets','when','loader'],
 
 fmd( 'use', ['lang','event','module','remote'],
     function( lang, event, Module, remote ){
-    
+    'use strict';
     
     event.on( 'makeRequire', function( require, mod ){
         
@@ -1236,7 +1240,7 @@ fmd( 'use', ['lang','event','module','remote'],
 
 fmd( 'async', ['config','module','remote'],
     function( config, Module, remote ){
-    
+    'use strict';
     
     var original = Module.prototype.autocompile;
     
@@ -1281,7 +1285,7 @@ fmd( 'async', ['config','module','remote'],
 
 fmd( 'logger', ['global','require','env','config','assets','loader','console'],
     function( global, require, env, config, assets, loader, console ){
-    
+    'use strict';
     
     var noop = env.log = function(){},
         sysConsole = global.console;
@@ -1324,7 +1328,7 @@ fmd( 'logger', ['global','require','env','config','assets','loader','console'],
 
 fmd( 'plugin', ['cache','lang','event','config','when','remote'],
     function( cache, lang, event, config, when, remote ){
-    
+    'use strict';
     
     var pluginCache = cache.plugin = {};
     
@@ -1441,7 +1445,7 @@ fmd( 'plugin', ['cache','lang','event','config','when','remote'],
 
 fmd( 'preload', ['global','lang','event','when','request','loader'],
     function( global, lang, event, when, request, loader ){
-    
+    'use strict';
     
     /**
      * Thanks to:
@@ -1559,7 +1563,7 @@ fmd( 'preload', ['global','lang','event','when','request','loader'],
 
 fmd( 'non', ['plugin','preload'],
     function( plugin, preload ){
-    
+    'use strict';
     
     plugin.register( 'non', function( callback ){
         

@@ -1,1 +1,1 @@
-fmd("non",["plugin","preload"],function(e,n){e.register("non",function(e){n(this.group,e)})});
+fmd("non",["plugin","preload"],function(a,b){a.register("non",function(a){b(this.group,a)})});

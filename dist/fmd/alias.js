@@ -1,1 +1,1 @@
-fmd("alias",["config","event"],function(n,t){var e="alias";n.register({keys:e,name:"object"}),t.on(e,function(t){var i,r=n.get(e);r&&(i=r[t.id])&&(t.id=i)})});
+fmd("alias",["config","event"],function(a,e){a.register({keys:"alias",name:"object"});e.on("alias",function(b){var c=a.get("alias"),d;c&&(d=c[b.id])&&(b.id=d)})});

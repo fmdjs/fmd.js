@@ -1,21 +1,21 @@
-/*! fmd.js v0.2.0 | http://fmdjs.org/ | MIT */
-/**
+/*! fmd.js v0.2.0 | http://fmdjs.org/ | MIT *//**
  * @module fmd/boot
  * @author Edgar <mail@edgar.im>
  * @version v0.2
- * @date 131023
+ * @date 131124
  * */
 
 
 (function( global ){
-    
+    'use strict';
     
     if ( global.fmd ){
         return;
     }
     
     
-    var partsCache = {};
+    var partsCache = {},
+        parts = [];
     
     var require = function( id ){
         
@@ -44,12 +44,16 @@
         }
         
         partsCache[id] = factory || 1;
+        parts.push( id );
+        
     };
     
     
     fmd.version = '0.2.0';
     
-    fmd.cache = {};
+    fmd.cache = {
+        parts: parts
+    };
     
     
     fmd( 'global', global );
@@ -84,7 +88,7 @@
 
 
 fmd( 'lang', function(){
-    
+    'use strict';
     
     var toString = {}.toString,
         AP = Array.prototype;
@@ -155,7 +159,7 @@ fmd( 'lang', function(){
 
 fmd( 'event', ['env','cache'],
     function( env, cache ){
-    
+    'use strict';
     
     /**
      * Thanks to:
@@ -222,7 +226,7 @@ fmd( 'event', ['env','cache'],
 
 fmd( 'config', ['env','cache','lang'],
     function( env, cache, lang ){
-    
+    'use strict';
     
     var configCache = cache.config = {},
         rulesCache = cache.configRules = {};
@@ -340,7 +344,7 @@ fmd( 'config', ['env','cache','lang'],
 
 fmd( 'module', ['global','env','cache','lang','event'],
     function( global, env, cache, lang, event ){
-    
+    'use strict';
     
     /**
      * Thanks to:
@@ -582,7 +586,7 @@ fmd( 'module', ['global','env','cache','lang','event'],
 
 fmd( 'relative', ['lang','event','module'],
     function( lang, event, Module ){
-    
+    'use strict';
     
     var rCwd = /.*\//,
         rDot = /\/\.\//,
@@ -642,7 +646,7 @@ fmd( 'relative', ['lang','event','module'],
 
 fmd( 'alias', ['config','event'],
     function( config, event ){
-    
+    'use strict';
     
     var ALIAS = 'alias';
     

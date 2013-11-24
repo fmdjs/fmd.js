@@ -6,7 +6,7 @@
 
 module.exports = function( grunt ){
     
-    var bannerTpl = '/*! fmd.js v<%= pkg.version %> | http://fmdjs.org/ | MIT */\n';
+    var bannerTpl = '/*! fmd.js v<%= pkg.version %> | http://fmdjs.org/ | MIT */';
     
     var baseSource = [
         'src/boot.js',
@@ -73,37 +73,7 @@ module.exports = function( grunt ){
                 dest: 'dist/fmd-aio-debug.js'
             }
         },
-        replace: {
-            all: {
-                options: {
-                    patterns: [{
-                        match: /\'use\sstrict\';/g,
-                        replacement: ''
-                    }]
-                },
-                files: [{
-                    expand: true,
-                    flatten: true,
-                    src: ['dist/*.js'],
-                    dest: 'dist/'
-                }]
-            },
-            dist: {
-                options: {
-                    patterns: [{
-                        match: /\"use\sstrict\";/,
-                        replacement: ''
-                    }]
-                },
-                files: [{
-                    expand: true,
-                    flatten: true,
-                    src: ['dist/fmd/*.js'],
-                    dest: 'dist/fmd/'
-                }]
-            }
-        },
-        uglify: {
+        gcc: {
             boot: {
                 options: {
                     banner: bannerTpl
@@ -121,29 +91,38 @@ module.exports = function( grunt ){
                     ext: '.js'
                 }]
             },
-            base: {
+            merge: {
                 options: {
                     banner: bannerTpl
                 },
-                files: {
-                    'dist/fmd-base.js': ['dist/fmd-base-debug.js',]
-                }
-            },
-            fmd: {
+                files: [{
+                    expand: true,
+                    flatten: true,
+                    src: ['dist/*-debug.js'],
+                    dest: 'dist/',
+                    rename: function(dest,src){
+                        return dest + src.replace('-debug','');
+                    }
+                }]
+            }
+        },
+        replace: {
+            version: {
                 options: {
-                    banner: bannerTpl
+                    patterns: [{
+                        match: /@VERSION/,
+                        replacement: '<%= pkg.version %>'
+                    }]
                 },
-                files: {
-                    'dist/fmd.js': ['dist/fmd-debug.js']
-                }
-            },
-            aio: {
-                options: {
-                    banner: bannerTpl
-                },
-                files: {
-                    'dist/fmd-aio.js': ['dist/fmd-aio-debug.js']
-                }
+                files: [{
+                    expand: true,
+                    flatten: true,
+                    src: ['dist/*.js'],
+                    dest: 'dist/'
+                }, {
+                    src: ['dist/fmd/boot.js'],
+                    dest: 'dist/fmd/boot.js'
+                }]
             }
         },
         copy: {
@@ -160,13 +139,13 @@ module.exports = function( grunt ){
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-replace');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-gcc');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-markdown');
     grunt.loadNpmTasks('grunt-contrib-clean');
 
-    grunt.registerTask('build', ['jshint','clean','concat','replace:all','uglify','replace:dist','copy']);
+    grunt.registerTask('build', ['jshint','clean','concat','gcc','replace','copy']);
     
     grunt.registerTask('default', ['build']);
 
