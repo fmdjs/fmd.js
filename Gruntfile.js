@@ -48,29 +48,21 @@ module.exports = function( grunt ){
             clear: ['dist']
         },
         concat: {
-            base: {
+            merge: {
                 options: {
                     separator: '\n\n',
                     banner: bannerTpl
                 },
-                src: baseSource,
-                dest: 'dist/fmd-base-debug.js'
-            },
-            fmd: {
-                options: {
-                    separator: '\n\n',
-                    banner: bannerTpl
-                },
-                src: defaultSource,
-                dest: 'dist/fmd-debug.js'
-            },
-            aio: {
-                options: {
-                    separator: '\n\n',
-                    banner: bannerTpl
-                },
-                src: aioSource,
-                dest: 'dist/fmd-aio-debug.js'
+                files: [{
+                    src: baseSource,
+                    dest: 'dist/fmd-base-debug.js'
+                }, {
+                    src: defaultSource,
+                    dest: 'dist/fmd-debug.js'
+                }, {
+                    src: aioSource,
+                    dest: 'dist/fmd-aio-debug.js'
+                }]
             }
         },
         gcc: {
