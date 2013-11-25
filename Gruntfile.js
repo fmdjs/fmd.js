@@ -51,7 +51,7 @@ module.exports = function( grunt ){
             merge: {
                 options: {
                     separator: '\n\n',
-                    banner: bannerTpl
+                    banner: bannerTpl + '\n'
                 },
                 files: [{
                     src: baseSource,

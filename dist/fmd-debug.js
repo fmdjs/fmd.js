@@ -1,4 +1,5 @@
-/*! fmd.js v0.2.0 | http://fmdjs.org/ | MIT *//**
+/*! fmd.js v0.2.0 | http://fmdjs.org/ | MIT */
+/**
  * @module fmd/boot
  * @author Edgar <mail@edgar.im>
  * @version v0.2
