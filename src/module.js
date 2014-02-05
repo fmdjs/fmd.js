@@ -1,8 +1,8 @@
 /**
  * @module fmd/module
  * @author Edgar <mail@edgar.im>
- * @version v0.3
- * @date 131111
+ * @version v0.3.1
+ * @date 140205
  * */
 
 
@@ -224,6 +224,8 @@ fmd( 'module', ['global','env','cache','lang','event'],
         Module.save( new Module( id, deps, factory ) );
     };
     
+    /* sign for FMD */
+    Module.define.fmd = {};
     
     /* exports API to fmd */
     var originalDefine = global.define;
