@@ -1,23 +1,21 @@
 /**
  * the Gruntfile for fmd.js
  * @author Edgar
- * @date 131112
+ * @date 140219
  * */
 
 module.exports = function( grunt ){
     
     var bannerTpl = '/*! fmd.js v<%= pkg.version %> | http://fmdjs.org/ | MIT */';
     
-    var baseSource = [
+    var source = [
         'src/boot.js',
         'src/lang.js',
         'src/event.js',
         'src/config.js',
         'src/module.js',
+        'src/alias.js',
         'src/relative.js',
-        'src/alias.js'
-    ],
-    defaultSource = baseSource.concat([
         'src/id2url.js',
         'src/assets.js',
         'src/when.js',
@@ -27,12 +25,7 @@ module.exports = function( grunt ){
         'src/use.js',
         'src/async.js',
         'src/logger.js'
-    ]),
-    aioSource = defaultSource.concat([
-        'src/plugin.js',
-        'src/preload.js',
-        'src/non.js'
-    ]);
+    ];
     
     grunt.initConfig({
 
@@ -53,16 +46,25 @@ module.exports = function( grunt ){
                     separator: '\n\n',
                     banner: bannerTpl + '\n'
                 },
-                files: [{
-                    src: baseSource,
-                    dest: 'dist/fmd-base-debug.js'
-                }, {
-                    src: defaultSource,
-                    dest: 'dist/fmd-debug.js'
-                }, {
-                    src: aioSource,
-                    dest: 'dist/fmd-aio-debug.js'
-                }]
+                files: {
+                    'dist/fmd-debug.js': source
+                }
+            },
+            nonDebug: {
+                options: {
+                    separator: '\n\n'
+                },
+                files: {
+                    'dist/plugins/non-debug.js': ['src/preload.js','src/non.js']
+                }
+            },
+            non: {
+                options: {
+                    separator: ''
+                },
+                files: {
+                    'dist/plugins/non.js': ['dist/fmd/preload.js','dist/fmd/non.js']
+                }
             }
         },
         gcc: {
@@ -87,15 +89,9 @@ module.exports = function( grunt ){
                 options: {
                     banner: bannerTpl
                 },
-                files: [{
-                    expand: true,
-                    flatten: true,
-                    src: ['dist/*-debug.js'],
-                    dest: 'dist/',
-                    rename: function(dest,src){
-                        return dest + src.replace('-debug','');
-                    }
-                }]
+                files: {
+                    'dist/fmd.js': ['dist/fmd-debug.js']
+                }
             }
         },
         replace: {
@@ -112,21 +108,20 @@ module.exports = function( grunt ){
                     src: ['dist/*.js'],
                     dest: 'dist/'
                 }, {
-                    src: ['dist/fmd/boot.js'],
-                    dest: 'dist/fmd/boot.js'
+                    'dist/fmd/boot.js': ['dist/fmd/boot.js']
                 }]
             }
         },
         copy: {
             combo: {
                 files: {
-                    'dist/plugin/combo.js': ['dist/fmd/combo.js'],
-                    'dist/plugin/combo-debug.js': ['src/combo.js']
+                    'dist/plugins/combo.js': ['dist/fmd/combo.js'],
+                    'dist/plugins/combo-debug.js': ['src/combo.js'],
+                    'dist/plugins/plugin.js': ['dist/fmd/plugin.js'],
+                    'dist/plugins/plugin-debug.js': ['src/plugin.js']
                 }
             }
-        },
-        markdown: {}
-
+        }
     });
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -137,7 +132,9 @@ module.exports = function( grunt ){
     grunt.loadNpmTasks('grunt-markdown');
     grunt.loadNpmTasks('grunt-contrib-clean');
 
-    grunt.registerTask('build', ['jshint','clean','concat','gcc','replace','copy']);
+    grunt.registerTask('concatPluginNon', ['concat:nonDebug','concat:non']);
+    
+    grunt.registerTask('build', ['jshint','clean','concat:merge','gcc','concatPluginNon','replace','copy']);
     
     grunt.registerTask('default', ['build']);
 
