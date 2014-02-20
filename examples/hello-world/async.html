@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>Hello World - fmd.js examples</title>
+        <script src="/dist/fmd.js"></script>
+    </head>
+    <body>
+        <script>
+            fmd.config({
+                resolve: function(id){
+                    //baseUrl是http://fmdjs.org/
+                    //定义时分别是w、output
+                    //实际url是 http://fmdjs.org/examples/hello-world/w.js
+                    //参数id的值为依赖中所写的模块名
+                    
+                    id = 'examples/hello-world/' + id;//这里不需要加后缀
+                    return id;
+                }
+            });
+        </script>
+        <script src="h.js"></script>
+        <script src="done.js"></script>
+    </body>
+</html>
