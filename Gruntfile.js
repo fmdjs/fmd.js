@@ -116,9 +116,7 @@ module.exports = function( grunt ){
             combo: {
                 files: {
                     'dist/plugins/combo.js': ['dist/fmd/combo.js'],
-                    'dist/plugins/combo-debug.js': ['src/combo.js'],
-                    'dist/plugins/plugin.js': ['dist/fmd/plugin.js'],
-                    'dist/plugins/plugin-debug.js': ['src/plugin.js']
+                    'dist/plugins/combo-debug.js': ['src/combo.js']
                 }
             }
         }
