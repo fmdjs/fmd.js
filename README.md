@@ -14,4 +14,4 @@ fmd.js基本兼容AMD规范
 
 http://fmdjs.org/
 
-（今天似乎.org域名解析有问题，可以临时访问 http://fmdjs.edgarhoo.net/ by Edgar, Feb 26 2014）
+（今天似乎.org域名解析有问题，可以临时访问 http://fmdjs.edgarhoo.com/ by Edgar, Feb 26 2014）
