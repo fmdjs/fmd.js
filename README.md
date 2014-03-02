@@ -10,8 +10,10 @@ fmd.js认为模块化是代码之本，一切代码均在模块中，一切皆�
 
 fmd.js基本兼容AMD规范
 
-# 官网&amp;文档
+# Docs and Website
 
-http://fmdjs.org/
+see http://fmdjs.org/
 
-（今天似乎.org域名解析有问题，可以临时访问 http://fmdjs.edgarhoo.com/ by Edgar, Feb 26 2014）
+# License
+
+Licensed under the [MIT license](http://fmdjs.org/LICENSE.txt).
