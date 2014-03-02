@@ -1,5 +1,6 @@
 node_modules/
 assets/
 docs/
+examples/
 index.html
 auto-pull*
