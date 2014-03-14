@@ -1,8 +1,8 @@
 /**
  * @module fmd/id2url
  * @author Edgar <mail@edgar.im>
- * @version v0.2
- * @date 131015
+ * @version v0.2.1
+ * @date 140314
  * */
 
 
@@ -19,10 +19,10 @@ fmd( 'id2url', ['global','event','config'],
     
     config.set({
         baseUrl: (function(){
-            var rUrl = /(?:[\w]+)\:\/\/(?:[\w|\.|\:]+)\//i,
+            var rDomain = /^\w+\:\/\/[\w\-\.:]+\//i,
                 scripts = global.document.getElementsByTagName('script'),
                 selfScript = scripts[scripts.length-1],
-                selfUrl = ( selfScript.hasAttribute ? selfScript.src : selfScript.getAttribute("src", 4) ).match( rUrl );
+                selfUrl = ( selfScript.hasAttribute ? selfScript.src : selfScript.getAttribute("src", 4) ).match( rDomain );
             
             return selfUrl[0];
         })()

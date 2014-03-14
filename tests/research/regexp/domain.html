@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>RegExp for domain</title>
+    </head>
+    <body>
+        <script>
+            var rDomain = /^\w+\:\/\/[\w\-\.:]+\//i;
+            
+            var a = 'http://dfd.dfer.dfe.com/fde/4rfdf/ufjer.js',
+                b = 'http://wed.fgr-dfe.org:89/feffEffef/ddfe-egdfd/4543.js',
+                c = 'http://12.23.34.90/gyuj/tyu/fr32-24rds.js',
+                d = 'http://45.123.142.3:999/23e/654d-dfe/sdferWdwWFS.js',
+                e = 'http://2.13.cn/todo/dfdfe-Dfffdgs/xfefo8.js?gfdfef=34refdf',
+                f = 'http://5.dfdf.co:234/gre3-ae3ef/fd3fEWSDDWDofwd/?dfw2d=ddwd&hu=23re',
+                g = 'https://dfe.com/Adff/dfwf?bgf=34&dfw=yt4r#dfef%w',
+                h = 'http://style.c.aliimg.com/fdevlib/js/lofty/port/lofty.js',
+                i = 'http://astatic.alicdn.com/js/app/operation/homepage/page/home2013/merge-new.js?_v=949713eb9f737cbcf6cc2d72534bc923.js',
+                j = 'http://astyle.alicdn.com/??fdevlib/js/lofty/util/cookie/1.0/cookie.js,fdevlib/js/lofty/alicn/aliuser/1.0/aliuser.js,fdevlib/js/lofty/alicn/subcookie/1.0/subcookie.js';
+                
+            document.write(a+'<br/>'+a.match(rDomain)[0]+'<br/><br/>');
+            document.write(b+'<br/>'+b.match(rDomain)[0]+'<br/><br/>');
+            document.write(c+'<br/>'+c.match(rDomain)[0]+'<br/><br/>');
+            document.write(d+'<br/>'+d.match(rDomain)[0]+'<br/><br/>');
+            document.write(e+'<br/>'+e.match(rDomain)[0]+'<br/><br/>');
+            document.write(f+'<br/>'+f.match(rDomain)[0]+'<br/><br/>');
+            document.write(g+'<br/>'+g.match(rDomain)[0]+'<br/><br/>');
+            document.write(h+'<br/>'+h.match(rDomain)[0]+'<br/><br/>');
+            document.write(i+'<br/>'+i.match(rDomain)[0]+'<br/><br/>');
+            document.write(j+'<br/>'+j.match(rDomain)[0]+'<br/><br/>');
+        </script>
+    </body>
+</html>

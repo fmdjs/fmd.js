@@ -1,8 +1,8 @@
 /**
  * @module fmd/combo
  * @author Edgar <mail@edgar.im>
- * @version v0.1
- * @date 131010
+ * @version v0.1.1
+ * @date 140314
  * */
 
 
@@ -26,7 +26,7 @@ fmd( 'combo', ['cache','lang','event','config','module','assets','plugin','when'
         EVENT_FETCH = 'fetch';
     
     var rStyle = /\.css(?:\?|$)/i,
-        rSplitUrl = /((?:[\w]+)\:\/\/(?:[\w|\.|\:]+)\/)(.+)/i;
+        rSplitUrl = /(^\w+\:\/\/[\w\-\.:]+\/)(.+)/i;
     
     var comboSyntax = ['??', ','],
         comboMaxLength = 1500;

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>RegExp for split domain and path</title>
+    </head>
+    <body>
+        <script>
+            var rSplitUrl = /(^\w+\:\/\/[\w\-\.:]+\/)(.+)/i;
+            
+            var a = 'http://dfd.dfer.dfe.com/fde/4rfdf/ufjer.js',
+                b = 'http://wed.fgr-dfe.org:89/feffEffef/ddfe-egdfd/4543.js',
+                c = 'http://12.23.34.90/gyuj/tyu/fr32-24rds.js',
+                d = 'http://45.123.142.3:999/23e/654d-dfe/sdferWdwWFS.js',
+                e = 'http://2.13.cn/todo/dfdfe-Dfffdgs/xfefo8.js',
+                f = 'http://5.dfdf.co:234/gre3-ae3ef/fd3fEWSDDWDofwd/dfefj.js',
+                g = 'https://dfe.com/Adff/dfwf.js',
+                h = 'http://style.c.aliimg.com/fdevlib/js/lofty/port/lofty.js',
+                i = 'http://astatic.alicdn.com/js/app/operation/homepage/page/home2013/merge-new.js';
+                
+            document.write(a+'<br/>'+a.match(rSplitUrl)[1]+'<br/>'+a.match(rSplitUrl)[2]+'<br/><br/>');
+            document.write(b+'<br/>'+b.match(rSplitUrl)[1]+'<br/>'+b.match(rSplitUrl)[2]+'<br/><br/>');
+            document.write(c+'<br/>'+c.match(rSplitUrl)[1]+'<br/>'+c.match(rSplitUrl)[2]+'<br/><br/>');
+            document.write(d+'<br/>'+d.match(rSplitUrl)[1]+'<br/>'+d.match(rSplitUrl)[2]+'<br/><br/>');
+            document.write(e+'<br/>'+e.match(rSplitUrl)[1]+'<br/>'+e.match(rSplitUrl)[2]+'<br/><br/>');
+            document.write(f+'<br/>'+f.match(rSplitUrl)[1]+'<br/>'+f.match(rSplitUrl)[2]+'<br/><br/>');
+            document.write(g+'<br/>'+g.match(rSplitUrl)[1]+'<br/>'+g.match(rSplitUrl)[2]+'<br/><br/>');
+            document.write(h+'<br/>'+h.match(rSplitUrl)[1]+'<br/>'+h.match(rSplitUrl)[2]+'<br/><br/>');
+            document.write(i+'<br/>'+i.match(rSplitUrl)[1]+'<br/>'+i.match(rSplitUrl)[2]+'<br/><br/>');
+            document.write(j+'<br/>'+j.match(rSplitUrl)[1]+'<br/>'+j.match(rSplitUrl)[2]+'<br/><br/>');
+        </script>
+    </body>
+</html>
