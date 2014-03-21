@@ -1,8 +1,8 @@
 /**
  * @module fmd/id2url
  * @author Edgar <mail@edgar.im>
- * @version v0.2.1
- * @date 140314
+ * @version v0.2.2
+ * @date 140320
  * */
 
 
@@ -24,7 +24,7 @@ fmd( 'id2url', ['global','event','config'],
                 selfScript = scripts[scripts.length-1],
                 selfUrl = ( selfScript.hasAttribute ? selfScript.src : selfScript.getAttribute("src", 4) ).match( rDomain );
             
-            return selfUrl[0];
+            return selfUrl ? selfUrl[0] : '';
         })()
     });
     
