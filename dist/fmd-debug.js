@@ -1,4 +1,4 @@
-/*! fmd.js v0.2.3 | http://fmdjs.org/ | MIT */
+/*! fmd.js v0.2.4 | http://fmdjs.org/ | MIT */
 /**
  * @module fmd/boot
  * @author Edgar <mail@edgar.im>
@@ -50,7 +50,7 @@
     };
     
     
-    fmd.version = '0.2.3';
+    fmd.version = '0.2.4';
     
     fmd.cache = {
         parts: parts
@@ -674,8 +674,8 @@ fmd( 'relative', ['lang','event','module'],
 /**
  * @module fmd/id2url
  * @author Edgar <mail@edgar.im>
- * @version v0.2.2
- * @date 140320
+ * @version v0.2.3
+ * @date 140516
  * */
 
 
@@ -695,7 +695,8 @@ fmd( 'id2url', ['global','event','config'],
             var rDomain = /^\w+\:\/\/[\w\-\.:]+\//i,
                 scripts = global.document.getElementsByTagName('script'),
                 selfScript = scripts[scripts.length-1],
-                selfUrl = ( selfScript.hasAttribute ? selfScript.src : selfScript.getAttribute("src", 4) ).match( rDomain );
+                src = selfScript.hasAttribute ? selfScript.src : selfScript.getAttribute( 'src', 4 ),
+                selfUrl = src ? src.match( rDomain ) : null;
             
             return selfUrl ? selfUrl[0] : '';
         })()
