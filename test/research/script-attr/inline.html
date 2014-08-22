@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>inline script</title>
+    </head>
+    <body>
+        <script>
+            var script = document.getElementsByTagName('script');
+            document.writeln(script.src);
+            document.writeln(typeof script.src);
+            document.writeln(script.src?true:false);
+        </script>
+    </body>
+</html>

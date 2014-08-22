@@ -1,21 +1,25 @@
 {
     "name": "fmdjs",
-    "version": "0.2.4",
+    "version": "0.2.5",
     "description": "another module writing system",
+    "keywords": ["FMD","module","fmd.js","AMD","loader"],
     "homepage": "http://fmdjs.org/",
+    "bugs": {
+        "url": "https://github.com/fmdjs/fmdjs/issues"
+    },
+    "licenses": [{
+        "type": "MIT",
+        "url": "http://opensource.org/licenses/MIT"
+    }],
     "author": {
         "name": "Edgar Hoo",
-        "email": "mail@edgar.im"
+        "email": "mail@edgar.im",
+        "url": "http://edgar.im/"
     },
     "repository": {
         "type": "git",
         "url": "git://github.com/fmdjs/fmdjs.git"
     },
-    "licenses": [{
-        "type": "MIT",
-        "url": "http://www.opensource.org/licenses/mit-license.php"
-    }],
-    "keywords": ["FMD","module","fmd.js"],
     "engines": {
         "node": ">=0.8.0"
     },
@@ -28,6 +32,5 @@
         "grunt-markdown": "~0.4.0",
         "grunt-contrib-clean": "~0.5.0",
         "grunt-contrib-copy": "~0.4.1"
-    },
-    "dependencies": {}
+    }
 }
