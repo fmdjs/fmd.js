@@ -1,4 +1,4 @@
-/*! fmd.js v0.2.4 | http://fmdjs.org/ | MIT */
+/*! fmd.js v0.2.5 | http://fmdjs.org/ | MIT */
 /**
  * @module fmd/boot
  * @author Edgar <mail@edgar.im>
@@ -50,7 +50,7 @@
     };
     
     
-    fmd.version = '0.2.4';
+    fmd.version = '0.2.5';
     
     fmd.cache = {
         parts: parts
@@ -920,8 +920,8 @@ fmd( 'when', function(){
 /**
  * @module fmd/request
  * @author Edgar <mail@edgar.im>
- * @version v0.2
- * @date 131007
+ * @version v0.3
+ * @date 140822
  * */
 
 
@@ -949,12 +949,18 @@ fmd( 'request', ['global','config','event'],
     
     var rStyle = /\.css(?:\?|$)/i,
         rReadyStates = /loaded|complete/,
-        rLoadXdSheetError = /security|denied/i;
+        rLoadXdSheetError = /security|denied/i,
+        rWebKit = /.*webkit\/?(\d+)\..*/,
+        rMobile = /mobile/;
     
     var EVENT_REQUESTED = 'requested',
         CHARSET = 'charset';
-        
-    var isOldWebKit = ( global.navigator.userAgent.replace(/.*AppleWebKit\/(\d+)\..*/, "$1") ) * 1 < 536;
+    
+    var UA = global.navigator.userAgent.toLowerCase();
+    
+    var webkitVersion = UA.match( rWebKit ),
+        isOldWebKit = webkitVersion ? webkitVersion[1] * 1 < 536 : false,
+        isPollCSS = isOldWebKit || ( !webkitVersion && rMobile.test( UA ) );
     
     var head = doc && ( doc.head || doc.getElementsByTagName('head')[0] || doc.documentElement );
     
@@ -1042,7 +1048,7 @@ fmd( 'request', ['global','config','event'],
     
     onLoadStyle = function( node, callback, isSupportOnload, asset ){
         
-        if ( isOldWebKit || !isSupportOnload ){
+        if ( !isSupportOnload || isPollCSS ){
             setTimeout( function(){
                 poll( node, callback, asset );
             }, 1 );
