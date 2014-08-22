@@ -14,7 +14,7 @@ fmd.config({
         
         /^specs\//.test( id ) && ( id = 'test/' + id );
         
-        id === 'fmd/console' && ( id = location.pathname.indexOf('dist') ? 'dist/fmd/console' : 'src/console' );
+        id === 'fmd/console' && ( id = location.pathname.indexOf('source') ? 'src/console' : 'dist/fmd/console' );
         
         return id;
     },

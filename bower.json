@@ -1,11 +1,11 @@
 {
-  "name": "fmdjs",
-  "version": "0.2.3",
+  "name": "fmd.js",
+  "version": "0.2.5",
   "main": "dist/fmd.js",
   "ignore": [
     ".*",
     "lib",
-    "tests",
+    "test",
     "Gruntfile.js",
     "LICENSE.txt",
     "package.json"

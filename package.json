@@ -1,11 +1,11 @@
 {
-    "name": "fmdjs",
+    "name": "fmd.js",
     "version": "0.2.5",
     "description": "another module writing system",
     "keywords": ["FMD","module","fmd.js","AMD","loader"],
     "homepage": "http://fmdjs.org/",
     "bugs": {
-        "url": "https://github.com/fmdjs/fmdjs/issues"
+        "url": "https://github.com/fmdjs/fmd.js/issues"
     },
     "licenses": [{
         "type": "MIT",
@@ -18,7 +18,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git://github.com/fmdjs/fmdjs.git"
+        "url": "git://github.com/fmdjs/fmd.js.git"
     },
     "engines": {
         "node": ">=0.8.0"
