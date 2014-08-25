@@ -73,5 +73,49 @@ fmd( 'specs/request', ['request'], function( request ){
             } );
         } );
         
+        describe( 'request css multiple', function(){
+            var b, c;
+                
+            beforeEach(function(){
+                b = document.createElement('div');
+                c = document.createElement('div');
+                b.id = 'specs-request-b';
+                c.id = 'specs-request-c';
+                document.body.appendChild( b );
+                document.body.appendChild( c );
+            });
+            
+            afterEach(function(){
+                document.body.removeChild( b );
+                document.body.removeChild( c );
+            });
+            
+            it( 'request css multiple', function(){
+                var a, d;
+                
+                runs(function(){
+                    request( {url:'/test/specs/request/b.css?'+t}, function(){
+                        setTimeout(function(){
+                            a = getStyle( b, 'color');
+                        },200);
+                    } );
+                    request( {url:'/test/specs/request/c.css?'+t}, function(){
+                        setTimeout(function(){
+                            d = getStyle( c, 'color');
+                        },200);
+                    } );
+                });
+                
+                waitsFor(function(){
+                    return !!a && !!d;
+                });
+                
+                runs(function(){
+                    expect(a==='rgb(88, 36, 56)'||a==='#582438').toEqual(true);
+                    expect(d==='rgb(160, 48, 104)'||d==='#a03068').toEqual(true);
+                });
+            } );
+        } );
+        
     } );
 } );
