@@ -58,7 +58,7 @@ fmd( 'specs/request', ['request'], function( request ){
                 runs(function(){
                     request( {url:'/test/specs/request/a.css?'+t}, function(){
                         setTimeout(function(){
-                            a = getStyle( el, 'color');
+                            a = getStyle( el, 'color').toLowerCase();
                         },200);
                     } );
                 });
@@ -68,7 +68,7 @@ fmd( 'specs/request', ['request'], function( request ){
                 });
                 
                 runs(function(){
-                    expect(a==='rgb(144, 40, 71)'||a==='#902847').toEqual(true);
+                    expect( a === 'rgb(144, 40, 71)' || a === '#902847' ).toEqual(true);
                 });
             } );
         } );
@@ -96,12 +96,12 @@ fmd( 'specs/request', ['request'], function( request ){
                 runs(function(){
                     request( {url:'/test/specs/request/b.css?'+t}, function(){
                         setTimeout(function(){
-                            a = getStyle( b, 'color');
+                            a = getStyle( b, 'color' ).toLowerCase();
                         },200);
                     } );
                     request( {url:'/test/specs/request/c.css?'+t}, function(){
                         setTimeout(function(){
-                            d = getStyle( c, 'color');
+                            d = getStyle( c, 'color' ).toLowerCase();
                         },200);
                     } );
                 });
@@ -111,8 +111,8 @@ fmd( 'specs/request', ['request'], function( request ){
                 });
                 
                 runs(function(){
-                    expect(a==='rgb(88, 36, 56)'||a==='#582438').toEqual(true);
-                    expect(d==='rgb(160, 48, 104)'||d==='#a03068').toEqual(true);
+                    expect( a === 'rgb(88, 36, 56)' || a === '#582438' ).toEqual(true);
+                    expect( d === 'rgb(160, 48, 104)' || d === '#a03068' ).toEqual(true);
                 });
             } );
         } );
