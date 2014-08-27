@@ -1,0 +1,7 @@
+node_modules/
+/assets/
+docs/
+lib/
+examples/
+index.html
+auto-pull*
