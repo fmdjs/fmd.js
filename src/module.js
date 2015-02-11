@@ -1,13 +1,13 @@
 /**
  * @module fmd/module
  * @author Edgar <mail@edgar.im>
- * @version v0.3.1
- * @date 140205
+ * @version v0.3.2
+ * @date 150211
  * */
 
 
-fmd( 'module', ['global','env','cache','lang','event'],
-    function( global, env, cache, lang, event ){
+fmd( 'module', ['global','env','cache','lang','event','config'],
+    function( global, env, cache, lang, event, config ){
     'use strict';
     
     /**
@@ -114,27 +114,14 @@ fmd( 'module', ['global','env','cache','lang','event'],
             
             var mod = this;
             
-            try {
-                if ( lang.isFunction( mod.factory ) ){
-                    
-                    var deps = mod.extract(),
-                        exports = mod.factory.apply( null, deps );
-                        
-                    if ( exports !== UNDEFINED ){
-                        mod.exports = exports;
-                    } else {
-                        mod.module && mod.module.exports && ( mod.exports = mod.module.exports );
-                    }
-                    
-                    mod.module && ( delete mod.module );
-                    
-                } else if ( mod.factory !== UNDEFINED ) {
-                    mod.exports = mod.factory;
+            if ( config.get('hasCatch') ){
+                try {
+                    Module.compile( mod );
+                } catch ( ex ){
+                    event.emit( 'compileFailed', ex, mod );
                 }
-                
-                event.emit( 'compiled', mod );
-            } catch ( ex ){
-                event.emit( 'compileFailed', ex, mod );
+            } else {
+                Module.compile( mod );
             }
         },
         
@@ -222,6 +209,28 @@ fmd( 'module', ['global','env','cache','lang','event'],
         }
         
         Module.save( new Module( id, deps, factory ) );
+    };
+    
+    Module.compile = function( mod ){
+        
+        if ( lang.isFunction( mod.factory ) ){
+            
+            var deps = mod.extract(),
+                exports = mod.factory.apply( null, deps );
+                
+            if ( exports !== UNDEFINED ){
+                mod.exports = exports;
+            } else {
+                mod.module && mod.module.exports && ( mod.exports = mod.module.exports );
+            }
+            
+            mod.module && ( delete mod.module );
+            
+        } else if ( mod.factory !== UNDEFINED ) {
+            mod.exports = mod.factory;
+        }
+        
+        event.emit( 'compiled', mod );
     };
     
     /* sign for FMD */
