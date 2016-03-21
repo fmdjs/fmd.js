@@ -1,8 +1,8 @@
 /**
  * @module fmd/combo
  * @author Edgar <mail@edgar.im>
- * @version v0.1.1
- * @date 140314
+ * @version v0.2.0
+ * @date 151206
  * */
 
 
@@ -133,6 +133,7 @@ fmd( 'combo', ['cache','lang','event','config','module','assets','plugin','when'
         var makeMeta = function( id, asset ){
             
             var meta = cache[id] = {
+                id: '',
                 url: asset._host,
                 plugin: PLUGIN_COMBO,
                 included: []
@@ -155,7 +156,8 @@ fmd( 'combo', ['cache','lang','event','config','module','assets','plugin','when'
                 meta = makeMeta( id, asset );
                 comboUrl = makeUrl( meta, asset );
             }
-            
+
+            meta.id += ( asset.id + ' ' );
             meta.url = comboUrl;
             meta.included.push( asset );
             if ( asset.plugin === PLUGIN_NON ){

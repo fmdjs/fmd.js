@@ -1,6 +1,6 @@
 {
     "name": "fmd.js",
-    "version": "0.2.7",
+    "version": "0.2.8",
     "description": "another module writing system",
     "keywords": ["FMD","module","fmd.js","AMD","loader"],
     "homepage": "http://fmdjs.org/",

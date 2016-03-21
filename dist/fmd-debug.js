@@ -1,4 +1,4 @@
-/*! fmd.js v0.2.7 | http://fmdjs.org/ | MIT */
+/*! fmd.js v0.2.8 | http://fmdjs.org/ | MIT */
 /**
  * @module fmd/boot
  * @author Edgar <mail@edgar.im>
@@ -50,7 +50,7 @@
     };
     
     
-    fmd.version = '0.2.7';
+    fmd.version = '0.2.8';
     
     fmd.cache = {
         parts: parts
