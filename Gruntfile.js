@@ -16,6 +16,7 @@ module.exports = function( grunt ){
         'src/module.js',
         'src/injector/alias.js',
         'src/injector/relative.js',
+        'src/loader/resolve.js',
         'src/loader/id2url.js',
         'src/loader/assets.js',
         'src/utils/when.js',

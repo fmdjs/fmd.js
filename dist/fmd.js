@@ -2,14 +2,14 @@
 /**
  * @module fmd/boot
  * @author Edgar <mail@edgar.im>
- * @version v0.2
- * @date 131124
+ * @version v0.3
+ * @date 170104
  * */
 
 
 (function( global ){
     'use strict';
-    
+
     if ( global.fmd ){
         return;
     }
@@ -77,7 +77,7 @@
     
     global.fmd = fmd;
     
-})( this );
+})( typeof window !== 'undefined' ? window : global );
 
 
 /**
@@ -682,10 +682,51 @@ fmd( 'relative', ['lang','event','module'],
 
 
 /**
+ * @module fmd/resolve
+ * @author Edgar <mail@edgar.im>
+ * @version v0.1
+ * @date 170104
+ * */
+
+
+fmd( 'resolve', ['event','config'],
+    function( event, config ){
+    'use strict';
+
+    config.register({
+        keys: 'resolve',
+        name: 'array'
+    });
+
+    var parseResolve = function( asset ){
+
+        var resolveQueue = config.get( 'resolve' ),
+            uri;
+
+        if ( resolveQueue ){
+            for ( var i = 0, l = resolveQueue.length; i < l; i++ ){
+                uri = resolveQueue[i]( asset.id );
+
+                if ( uri !== asset.id ){
+                    break;
+                }
+            }
+        }
+
+        asset.uri = uri ? uri : asset.id;
+    };
+
+
+    event.on( 'resolve', parseResolve );
+
+} );
+
+
+/**
  * @module fmd/id2url
  * @author Edgar <mail@edgar.im>
- * @version v0.2.3
- * @date 140516
+ * @version v0.3
+ * @date 170104
  * */
 
 
@@ -695,10 +736,7 @@ fmd( 'id2url', ['global','event','config'],
     
     var rAbsolute = /^https?:\/\//i;
     
-    var TIME_STAMP = ( new Date() ).getTime(),
-        RESOLVE = 'resolve',
-        STAMP = 'stamp';
-    
+    var TIME_STAMP = ( new Date() ).getTime();
     
     config.set({
         baseUrl: (function(){
@@ -713,34 +751,12 @@ fmd( 'id2url', ['global','event','config'],
     });
     
     config.register({
-        keys: RESOLVE,
-        name: 'array'
-    })
-    .register({
-        keys: STAMP,
+        keys: 'stamp',
         name: 'object'
     });
     
     
-    var parseResolve = function( asset ){
-            
-        var resolve = config.get( RESOLVE ),
-            url;
-        
-        if ( resolve ){
-            for ( var i = 0, l = resolve.length; i < l; i++ ){
-                url = resolve[i]( asset.id );
-                
-                if ( url !== asset.id ){
-                    break;
-                }
-            }
-        }
-        
-        asset.url = url ? url : asset.id;
-    },
-    
-    addBaseUrl = function( asset ){
+    var addBaseUrl = function( asset ){
         
         rAbsolute.test( asset.url ) || ( asset.url = config.get('baseUrl') + asset.url );
     },
@@ -755,12 +771,12 @@ fmd( 'id2url', ['global','event','config'],
     addStamp = function( asset ){
             
         var t = config.get('hasStamp') ? TIME_STAMP : null,
-            stamp = config.get( STAMP );
+            stampMap = config.get( 'stamp' );
             
-        if ( stamp ){
-            for ( var key in stamp ){
+        if ( stampMap ){
+            for ( var key in stampMap ){
                 if ( ( new RegExp( key ) ).test( asset.id ) ){
-                    t = stamp[key];
+                    t = stampMap[key];
                     break;
                 }
             }
@@ -771,18 +787,24 @@ fmd( 'id2url', ['global','event','config'],
     
     id2url = function( asset ){
         
-        event.emit( RESOLVE, asset );
+        event.emit( 'resolve', asset );
+        asset.url = asset.uri;
         
         addBaseUrl( asset );
         addExtname( asset );
         
-        event.emit( STAMP, asset );
+        event.emit( 'stamp', asset );
     };
     
     
-    event.on( RESOLVE, parseResolve );
-    event.on( STAMP, addStamp );
+    event.on( 'stamp', addStamp );
     event.on( 'id2url', id2url );
+
+    event.on( 'id2uri', function( asset ){
+
+        event.emit( 'id2url', asset );
+        asset.uri = asset.url;
+    } );
     
 } );
 
@@ -790,8 +812,8 @@ fmd( 'id2url', ['global','event','config'],
 /**
  * @module fmd/assets
  * @author Edgar <mail@edgar.im>
- * @version v0.1
- * @date 131014
+ * @version v0.2
+ * @date 170104
  * */
 
 
@@ -800,7 +822,7 @@ fmd( 'assets', ['cache','lang','event','config','module'],
     'use strict';
     
     var assetsCache = cache.assets = {},
-        id2urlMap = {};
+        id2uriMap = {};
     
     var assets = {
         make: function( id, meta ){
@@ -810,15 +832,15 @@ fmd( 'assets', ['cache','lang','event','config','module'],
             event.emit( 'relative', asset, meta );
             event.emit( 'alias', asset );
             
-            if ( id2urlMap[asset.id] ){
-                return assetsCache[ id2urlMap[asset.id] ];
+            if ( id2uriMap[asset.id] ){
+                return assetsCache[ id2uriMap[asset.id] ];
             }
             
-            Module.has( asset.id ) ? ( asset.url = asset.id ) : event.emit( 'id2url', asset );
+            Module.has( asset.id ) ? ( asset.uri = asset.id ) : event.emit( 'id2uri', asset );
             
-            id2urlMap[asset.id] = asset.url;
+            id2uriMap[asset.id] = asset.uri;
             
-            return ( assetsCache[asset.url] = asset );
+            return ( assetsCache[asset.uri] = asset );
         },
         
         group: function( meta ){

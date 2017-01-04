@@ -1,14 +1,14 @@
 /**
  * @module fmd/boot
  * @author Edgar <mail@edgar.im>
- * @version v0.2
- * @date 131124
+ * @version v0.3
+ * @date 170104
  * */
 
 
 (function( global ){
     'use strict';
-    
+
     if ( global.fmd ){
         return;
     }
@@ -76,4 +76,4 @@
     
     global.fmd = fmd;
     
-})( this );
+})( typeof window !== 'undefined' ? window : global );
