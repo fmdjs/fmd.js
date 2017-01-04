@@ -1,8 +1,8 @@
 /**
  * @module fmd/request
  * @author Edgar <mail@edgar.im>
- * @version v0.3
- * @date 140822
+ * @version v0.4
+ * @date 170105
  * */
 
 
@@ -33,10 +33,7 @@ fmd( 'request', ['global','config','event'],
         rLoadXdSheetError = /security|denied/i,
         rWebKit = /.*webkit\/?(\d+)\..*/,
         rMobile = /mobile/;
-    
-    var EVENT_REQUESTED = 'requested',
-        CHARSET = 'charset';
-    
+
     var UA = global.navigator.userAgent.toLowerCase();
     
     var webkitVersion = UA.match( rWebKit ),
@@ -60,7 +57,7 @@ fmd( 'request', ['global','config','event'],
             node.src = asset.url;
         }
         
-        config.get( CHARSET ) && ( node.charset = config.get( CHARSET ) );
+        config.get( 'charset' ) && ( node.charset = config.get( 'charset' ) );
         
         event.emit( 'createNode', node, asset );
         
@@ -86,7 +83,7 @@ fmd( 'request', ['global','config','event'],
         setTimeout( function(){
             if ( isLoaded ){
                 callback && callback();
-                event.emit( EVENT_REQUESTED, asset );
+                event.emit( 'requested', asset );
             } else {
                 poll( node, callback, asset );
             }
@@ -99,7 +96,7 @@ fmd( 'request', ['global','config','event'],
         if ( isSupportOnload ){
             node.onload = function(){
                 finish();
-                event.emit( EVENT_REQUESTED, asset );
+                event.emit( 'requested', asset );
             };
             node.onerror = function(){
                 finish();
@@ -109,7 +106,7 @@ fmd( 'request', ['global','config','event'],
             node.onreadystatechange = function(){
                 if ( rReadyStates.test( node.readyState ) ){
                     finish();
-                    event.emit( EVENT_REQUESTED, asset );
+                    event.emit( 'requested', asset );
                 }
             };
         }

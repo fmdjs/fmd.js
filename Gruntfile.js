@@ -79,7 +79,9 @@ module.exports = function( grunt ){
                         replacement: '<%= pkg.version %>'
                     }]
                 },
-                files: 'dist/fmd.js'
+                files: {
+                    'dist/fmd.js': 'dist/fmd.js'
+                }
             }
         },
         copy: {
@@ -101,8 +103,6 @@ module.exports = function( grunt ){
     grunt.loadNpmTasks('grunt-markdown');
     grunt.loadNpmTasks('grunt-contrib-clean');
 
-    //grunt.registerTask('concatPluginNon', ['concat:nonDebug','concat:non']);
-    
     grunt.registerTask('build', ['jshint','clean','concat','replace','gcc','copy']);
     
     grunt.registerTask('default', ['build']);

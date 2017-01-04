@@ -50,7 +50,7 @@
     };
     
     
-    fmd.version = '@VERSION';
+    fmd.version = '0.3.0';
     
     fmd.cache = {
         parts: parts
@@ -592,8 +592,8 @@ fmd( 'module', ['global','env','cache','lang','event','config'],
 /**
  * @module fmd/alias
  * @author Edgar <mail@edgar.im>
- * @version v0.2
- * @date 131010
+ * @version v0.3
+ * @date 170105
  * */
 
 
@@ -601,16 +601,14 @@ fmd( 'alias', ['config','event'],
     function( config, event ){
     'use strict';
     
-    var ALIAS = 'alias';
-    
     config.register({
-        keys: ALIAS,
+        keys: 'alias',
         name: 'object'
     });
     
-    event.on( ALIAS, function( meta ){
+    event.on( 'alias', function( meta ){
         
-        var aliases = config.get( ALIAS ),
+        var aliases = config.get( 'alias' ),
             alias;
         
         if ( aliases && ( alias = aliases[meta.id] ) ){
@@ -952,8 +950,8 @@ fmd( 'when', function(){
 /**
  * @module fmd/request
  * @author Edgar <mail@edgar.im>
- * @version v0.3
- * @date 140822
+ * @version v0.4
+ * @date 170105
  * */
 
 
@@ -984,10 +982,7 @@ fmd( 'request', ['global','config','event'],
         rLoadXdSheetError = /security|denied/i,
         rWebKit = /.*webkit\/?(\d+)\..*/,
         rMobile = /mobile/;
-    
-    var EVENT_REQUESTED = 'requested',
-        CHARSET = 'charset';
-    
+
     var UA = global.navigator.userAgent.toLowerCase();
     
     var webkitVersion = UA.match( rWebKit ),
@@ -1011,7 +1006,7 @@ fmd( 'request', ['global','config','event'],
             node.src = asset.url;
         }
         
-        config.get( CHARSET ) && ( node.charset = config.get( CHARSET ) );
+        config.get( 'charset' ) && ( node.charset = config.get( 'charset' ) );
         
         event.emit( 'createNode', node, asset );
         
@@ -1037,7 +1032,7 @@ fmd( 'request', ['global','config','event'],
         setTimeout( function(){
             if ( isLoaded ){
                 callback && callback();
-                event.emit( EVENT_REQUESTED, asset );
+                event.emit( 'requested', asset );
             } else {
                 poll( node, callback, asset );
             }
@@ -1050,7 +1045,7 @@ fmd( 'request', ['global','config','event'],
         if ( isSupportOnload ){
             node.onload = function(){
                 finish();
-                event.emit( EVENT_REQUESTED, asset );
+                event.emit( 'requested', asset );
             };
             node.onerror = function(){
                 finish();
@@ -1060,7 +1055,7 @@ fmd( 'request', ['global','config','event'],
             node.onreadystatechange = function(){
                 if ( rReadyStates.test( node.readyState ) ){
                     finish();
-                    event.emit( EVENT_REQUESTED, asset );
+                    event.emit( 'requested', asset );
                 }
             };
         }
@@ -1112,8 +1107,8 @@ fmd( 'request', ['global','config','event'],
 /**
  * @module fmd/loader
  * @author Edgar <mail@edgar.im>
- * @version v0.2
- * @date 131004
+ * @version v0.3
+ * @date 170105
  * */
 
 
@@ -1122,8 +1117,7 @@ fmd( 'loader', ['global','event','config','request'],
     'use strict';
     
     var STATE_LOADING = 'loading',
-        STATE_LOADED = 'loaded',
-        EVENT_REQUEST_COMPLETE = 'requestComplete';
+        STATE_LOADED = 'loaded';
         
     var noop = function(){};
     
@@ -1133,7 +1127,7 @@ fmd( 'loader', ['global','event','config','request'],
     });
     
     
-    event.on( EVENT_REQUEST_COMPLETE, function( asset ){
+    event.on( 'requestComplete', function( asset ){
         
         var call, queue;
         
@@ -1175,7 +1169,7 @@ fmd( 'loader', ['global','event','config','request'],
         
         request( asset, function(){
             global.clearTimeout( asset.timer );
-            event.emit( EVENT_REQUEST_COMPLETE, asset );
+            event.emit( 'requestComplete', asset );
         } );
     };
     

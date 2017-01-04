@@ -1,8 +1,8 @@
 /**
  * @module fmd/loader
  * @author Edgar <mail@edgar.im>
- * @version v0.2
- * @date 131004
+ * @version v0.3
+ * @date 170105
  * */
 
 
@@ -11,8 +11,7 @@ fmd( 'loader', ['global','event','config','request'],
     'use strict';
     
     var STATE_LOADING = 'loading',
-        STATE_LOADED = 'loaded',
-        EVENT_REQUEST_COMPLETE = 'requestComplete';
+        STATE_LOADED = 'loaded';
         
     var noop = function(){};
     
@@ -22,7 +21,7 @@ fmd( 'loader', ['global','event','config','request'],
     });
     
     
-    event.on( EVENT_REQUEST_COMPLETE, function( asset ){
+    event.on( 'requestComplete', function( asset ){
         
         var call, queue;
         
@@ -64,7 +63,7 @@ fmd( 'loader', ['global','event','config','request'],
         
         request( asset, function(){
             global.clearTimeout( asset.timer );
-            event.emit( EVENT_REQUEST_COMPLETE, asset );
+            event.emit( 'requestComplete', asset );
         } );
     };
     

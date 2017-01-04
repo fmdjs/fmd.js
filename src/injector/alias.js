@@ -1,8 +1,8 @@
 /**
  * @module fmd/alias
  * @author Edgar <mail@edgar.im>
- * @version v0.2
- * @date 131010
+ * @version v0.3
+ * @date 170105
  * */
 
 
@@ -10,16 +10,14 @@ fmd( 'alias', ['config','event'],
     function( config, event ){
     'use strict';
     
-    var ALIAS = 'alias';
-    
     config.register({
-        keys: ALIAS,
+        keys: 'alias',
         name: 'object'
     });
     
-    event.on( ALIAS, function( meta ){
+    event.on( 'alias', function( meta ){
         
-        var aliases = config.get( ALIAS ),
+        var aliases = config.get( 'alias' ),
             alias;
         
         if ( aliases && ( alias = aliases[meta.id] ) ){

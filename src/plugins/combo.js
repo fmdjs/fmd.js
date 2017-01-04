@@ -1,8 +1,8 @@
 /**
  * @module fmd/combo
  * @author Edgar <mail@edgar.im>
- * @version v0.2.0
- * @date 151206
+ * @version v0.3
+ * @date 170104
  * */
 
 
@@ -20,10 +20,7 @@ fmd( 'combo', ['cache','lang','event','config','module','assets','plugin','when'
     var PLUGIN_ASYNC = 'async',
         PLUGIN_NON = 'non',
         PLUGIN_COMBO = '_combo',
-        PLUGIN_COMBO_NON = '_combo_non',
-        COMBO_SYNTAX = 'comboSyntax',
-        COMBO_MAX_LENGTH = 'comboMaxLength',
-        EVENT_FETCH = 'fetch';
+        PLUGIN_COMBO_NON = '_combo_non';
     
     var rStyle = /\.css(?:\?|$)/i,
         rSplitUrl = /(^\w+\:\/\/[\w\-\.:]+\/)(.+)/i;
@@ -86,8 +83,8 @@ fmd( 'combo', ['cache','lang','event','config','module','assets','plugin','when'
             return;
         }
         
-        config.get( COMBO_SYNTAX ) && ( comboSyntax = config.get( COMBO_SYNTAX ) );
-        config.get( COMBO_MAX_LENGTH ) && ( comboMaxLength = config.get( COMBO_MAX_LENGTH ) );
+        config.get( 'comboSyntax' ) && ( comboSyntax = config.get( 'comboSyntax' ) );
+        config.get( 'comboMaxLength' ) && ( comboMaxLength = config.get( 'comboMaxLength' ) );
         
         var asset, mod, needComboGroup = [];
         
@@ -223,11 +220,11 @@ fmd( 'combo', ['cache','lang','event','config','module','assets','plugin','when'
             this.combo = val;
             
             if ( val === true ){
-                event.on( EVENT_FETCH, onFetch );
+                event.on( 'fetch', onFetch );
                 plugin.register( PLUGIN_COMBO, comboExecute );
                 plugin.register( PLUGIN_COMBO_NON, comboNonExecute );
             } else {
-                event.off( EVENT_FETCH, onFetch );
+                event.off( 'fetch', onFetch );
                 plugin.register( PLUGIN_COMBO, null );
                 plugin.register( PLUGIN_COMBO_NON, null );
             }
