@@ -28,7 +28,6 @@
     "noempty": true,
     "nomen": false,
     "plusplus": false,
-    "undef": true,
     "sub": true,
     "white": false,
     "proto": true,

@@ -1,16 +1,13 @@
 {
     "name": "fmd.js",
-    "version": "0.2.8",
+    "version": "0.3.0",
     "description": "another module writing system",
     "keywords": ["FMD","module","fmd.js","AMD","loader"],
     "homepage": "http://fmdjs.org/",
     "bugs": {
         "url": "https://github.com/fmdjs/fmd.js/issues"
     },
-    "licenses": [{
-        "type": "MIT",
-        "url": "http://opensource.org/licenses/MIT"
-    }],
+    "license": "MIT",
     "author": {
         "name": "Edgar Hoo",
         "email": "mail@edgar.im",
