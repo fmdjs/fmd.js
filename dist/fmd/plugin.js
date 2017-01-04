@@ -1,2 +1,115 @@
-fmd("plugin","cache lang event config when remote".split(" "),function(l,g,h,m,n,d){var f=l.plugin={},p=/(.+)!(.+)/,e={defaultPlugin:"async",register:function(a,b){f[a]=b},sorting:function(a){var b=[],c={},e,d;g.forEach(a,function(a){-1<c[a.plugin]?d=b[c[a.plugin]]:(e=c[a.plugin]=b.length,d=b[e]={group:[],execute:f[a.plugin]});d.group.push(a)});return b}};e.register(e.defaultPlugin,function(a){d.get(this.group,a)});var k=function(a){var b=a.id.match(p);b&&(a.plugin=b[1],a.id=b[2]);!f[a.plugin]&&(a.plugin=
-e.defaultPlugin)},q=function(a,b){n.apply(null,g.map(e.sorting(a),function(a){return function(b){a.execute?a.execute(function(){b.resolve()}):b.resolve()}})).then(b)};m.register({keys:"plugin",rule:function(a,b,c){c=!!c;a!==c&&(this.plugin=c,!0===c?(h.on("analyze",k),d.bring=q):(h.off("analyze",k),d.bring=d.get))}}).set({plugin:!0});return e});
+/**
+ * @module fmd/plugin
+ * @author Edgar <mail@edgar.im>
+ * @version v0.1
+ * @date 131010
+ * */
+
+
+fmd( 'plugin', ['cache','lang','event','config','when','remote'],
+    function( cache, lang, event, config, when, remote ){
+    'use strict';
+    
+    var pluginCache = cache.plugin = {};
+    
+    var rPlugin = /(.+)!(.+)/;
+    
+    var ANALYZE = 'analyze';
+    
+    
+    var plugin = {
+        defaultPlugin: 'async',
+        
+        register: function( name, execute ){
+            pluginCache[name] = execute;
+        },
+        
+        sorting: function( group ){
+            
+            var tasks = [],
+                flag = {},
+                taskIndex,
+                task;
+            
+            lang.forEach( group, function( asset ){
+                
+                if ( flag[asset.plugin] > -1 ){
+                    task = tasks[flag[asset.plugin]];
+                } else {
+                    taskIndex = flag[asset.plugin] = tasks.length;
+                    task = tasks[taskIndex] = {
+                        group: [],
+                        execute: pluginCache[asset.plugin]
+                    };
+                }
+                
+                task.group.push( asset );
+            } );
+            
+            return tasks;
+        }
+    };
+    
+    
+    /* default plugin */
+    plugin.register( plugin.defaultPlugin, function( callback ){
+        
+        remote.get( this.group, callback );
+    } );
+    
+    
+    /* inject plugin */
+    var onAnalyze = function( asset ){
+        
+        var result = asset.id.match( rPlugin );
+        
+        if ( result ){
+            asset.plugin = result[1];
+            asset.id = result[2];
+        }
+        
+        !pluginCache[asset.plugin] && ( asset.plugin = plugin.defaultPlugin );
+    },
+    
+    router = function( group, callback ){
+        
+        when.apply( null, lang.map( plugin.sorting( group ), function( task ){
+            return function( promise ) {
+                
+                task.execute ? task.execute( function(){
+                    promise.resolve();
+                } ) : promise.resolve();
+            };
+        } ) ).then( callback );
+    };
+    
+    
+    config.register({
+        keys: 'plugin',
+        rule: function( current, key, val ){
+            
+            val = !!val;
+            
+            if ( current === val ){
+                return;
+            }
+            
+            this.plugin = val;
+            
+            if ( val === true ){
+                event.on( ANALYZE, onAnalyze );
+                remote.bring = router;
+            } else {
+                event.off( ANALYZE, onAnalyze );
+                remote.bring = remote.get;
+            }
+        }
+    })
+    .set({
+        plugin: true
+    });
+    
+    
+    return plugin;
+    
+} );

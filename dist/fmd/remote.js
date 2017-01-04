@@ -1,2 +1,0 @@
-fmd("remote","lang event module assets when loader".split(" "),function(f,l,g,m,h,b){var a={};a.bring=a.get=function(a,e){h.apply(null,f.map(a,function(a){return function(k){g.has(a.id)?k.resolve():b(a,function(){k.resolve()})}})).then(e)};a.fetch=function(b,e){var c=m.group(b);l.emit("fetch",c);a.bring(c,function(){h.apply(null,f.map(c,function(c){return function(b){var d=g.get(c.id);d&&!d.compiled&&d.deps.length?a.fetch(d,function(){b.resolve()}):b.resolve()}})).then(function(){e.call(null,c)})})};
-return a});

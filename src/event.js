@@ -1,8 +1,8 @@
 /**
  * @module fmd/event
  * @author Edgar <mail@edgar.im>
- * @version v0.1
- * @date 131015
+ * @version v0.2
+ * @date 170104
  * */
 
 
@@ -57,6 +57,7 @@ fmd( 'event', ['env','cache'],
     
     /* exports API to fmd */
     env.on = event.on;
+    env.emit = event.emit;
     env.off = event.off;
     
     

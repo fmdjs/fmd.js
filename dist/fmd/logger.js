@@ -1,1 +1,0 @@
-fmd("logger","global require env config assets loader console".split(" "),function(f,g,d,h,k,e,a){var l=d.log=function(){},b=f.console,n=function(m){d.log=m?b&&b.warn?function(a,c){b[c||"log"](a)}:function(b,c){a?a(b,c):e&&e(k.make("fmd/console"),function(){a||(a=g("console"));a(b,c)})}:l};h.register({keys:"debug",rule:function(a,b,c){n(c);this.debug=c}})});
