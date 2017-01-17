@@ -2,7 +2,7 @@
  * @module fmd/alias
  * @author Edgar <mail@edgar.im>
  * @version v0.3
- * @date 170105
+ * @date 170118
  * */
 
 
@@ -11,7 +11,7 @@ fmd( 'alias', ['config','event'],
     'use strict';
     
     config.register({
-        keys: 'alias',
+        key: 'alias',
         name: 'object'
     });
     
@@ -21,6 +21,7 @@ fmd( 'alias', ['config','event'],
             alias;
         
         if ( aliases && ( alias = aliases[meta.id] ) ){
+            meta.nominalId = meta.id;
             meta.id = alias;
         }
     } );

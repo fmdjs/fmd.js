@@ -1,13 +1,13 @@
 /**
  * @module fmd/relative
  * @author Edgar <mail@edgar.im>
- * @version v0.1
- * @date 131118
+ * @version v0.2
+ * @date 170117
  * */
 
 
-fmd( 'relative', ['lang','event','module'],
-    function( lang, event, Module ){
+fmd( 'relative', ['lang','event'],
+    function( lang, event ){
     'use strict';
     
     var rCwd = /.*\//,
@@ -21,7 +21,7 @@ fmd( 'relative', ['lang','event','module'],
         },
         
         isDotStart: function( id ){
-            
+
             return id.charAt(0) === '.';
         },
         
@@ -43,9 +43,9 @@ fmd( 'relative', ['lang','event','module'],
     };
     
     
-    event.on( 'relative', function( meta, mod ){
-        
-        if ( relative.isDotStart( meta.id ) && mod && relative.hasSlash( mod.id ) ){
+    event.on( 'alias', function( meta, mod ){
+
+        if ( mod && mod.id && relative.isDotStart( meta.id ) && relative.hasSlash( mod.id ) ){
             mod._cwd || ( mod._cwd = relative.cwd( mod.id ) );
             
             meta.id = relative.resolve( mod._cwd, meta.id );

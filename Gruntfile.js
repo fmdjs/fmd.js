@@ -1,7 +1,7 @@
 /**
  * the Gruntfile for fmd.js
  * @author Edgar
- * @date 170104
+ * @date 170117
  * */
 
 module.exports = function( grunt ){
@@ -14,8 +14,8 @@ module.exports = function( grunt ){
         'src/event.js',
         'src/config.js',
         'src/module.js',
-        'src/injector/alias.js',
         'src/injector/relative.js',
+        'src/injector/alias.js',
         'src/loader/resolve.js',
         'src/loader/id2url.js',
         'src/loader/assets.js',

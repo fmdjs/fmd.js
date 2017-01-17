@@ -27,7 +27,7 @@ fmd( 'id2url', ['global','event','config'],
     });
     
     config.register({
-        keys: 'stamp',
+        key: 'stamp',
         name: 'object'
     });
     

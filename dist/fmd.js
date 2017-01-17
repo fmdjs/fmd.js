@@ -221,8 +221,8 @@ fmd( 'event', ['env','cache'],
 /**
  * @module fmd/config
  * @author Edgar <mail@edgar.im>
- * @version v0.2
- * @date 131022
+ * @version v0.3
+ * @date 170117
  * */
 
 
@@ -231,64 +231,58 @@ fmd( 'config', ['env','cache','lang'],
     'use strict';
     
     var configCache = cache.config = {},
-        rulesCache = cache.configRules = {};
+        configKeysCache = cache.configKeys = {},
+        configRulesCache = cache.configRules = {};
     
     var ANONYMOUS_RULE_PREFIX = '_rule_';
     
     var ruleUid = 0;
     
     
-    var applyRules = function( current, key, val ){
+    var applyRule = function( current, key, val, ruleName ){
         
-        var hasApply = false,
-            item;
+        var rule = configRulesCache[ruleName];
 
-        for ( var name in rulesCache ){
-            if ( !hasApply ){
-                item = rulesCache[name];
-                hasApply = lang.inArray( item.keys, key ) > -1 && ( item.rule.call( configCache, current, key, val ) === undefined );
-            } else {
-                break;
-            }
+        if ( rule ){
+            return rule.call( configCache, current, key, val ) === undefined;
         }
-        
-        return hasApply;
+
+        return false;
     };
     
     
     var config = {
         get: function( key ){
+
             return configCache[key];
         },
         set: function( options ){
+
             for ( var key in options ){
                 var current = configCache[key],
-                    val = options[key];
+                    val = options[key],
+                    ruleName = configKeysCache[key];
                 
-                if ( !applyRules( current, key, val ) ){
+                if ( !ruleName || !applyRule( current, key, val, ruleName ) ){
                     configCache[key] = val;
                 }
             }
         },
         register: function( o ){
             
-            var item;
-            
             if ( lang.isFunction( o.rule ) ){
                 o.name || ( o.name = ANONYMOUS_RULE_PREFIX + ( ruleUid++ ) );
-                
-                item = rulesCache[o.name] = {
-                    rule: o.rule,
-                    keys: []
-                };
+                configRulesCache[o.name] = o.rule;
             }
-            
-            item || ( item = rulesCache[o.name] );
-            
-            if ( item && o.keys ){
-                lang.isArray( o.keys ) ?
-                    ( item.keys = item.keys.concat( o.keys ) ) :
-                    item.keys.push( o.keys );
+
+            if ( configRulesCache[o.name] && ( o.key || o.keys ) ){
+                if ( lang.isArray( o.keys ) ){
+                    lang.forEach( o.keys, function( key ){
+                        configKeysCache[key] = o.name;
+                    } );
+                } else {
+                    configKeysCache[ o.key || o.keys ] = o.name;
+                }
             }
             
             return this;
@@ -339,8 +333,8 @@ fmd( 'config', ['env','cache','lang'],
 /**
  * @module fmd/module
  * @author Edgar <mail@edgar.im>
- * @version v0.3.2
- * @date 150211
+ * @version v0.4
+ * @date 170117
  * */
 
 
@@ -367,9 +361,9 @@ fmd( 'module', ['global','env','cache','lang','event','config'],
     
     
     /**
-     * key-modules
+     * builtin-modules
      * */
-    var keyModules = {
+    var builtinModules = {
         'require': function( mod ){
             
             mod.require || Module.makeRequire( mod );
@@ -390,6 +384,10 @@ fmd( 'module', ['global','env','cache','lang','event','config'],
             };
             
             return mod.module;
+        },
+        '@fmd': function(){
+
+            return env;
         }
     };
     
@@ -434,7 +432,7 @@ fmd( 'module', ['global','env','cache','lang','event','config'],
             if ( lang.isArray( deps ) ){
                 lang.forEach( deps, function( id ){
                     var mid, hook;
-                    if ( hook = keyModules[id] ){
+                    if ( hook = builtinModules[id] ){
                         mid = hook( mod );
                     } else {
                         mod.require || Module.makeRequire( mod );
@@ -477,7 +475,7 @@ fmd( 'module', ['global','env','cache','lang','event','config'],
     
     Module.has = function( id, deep ){
         
-        if ( keyModules[id] ){
+        if ( builtinModules[id] ){
             return true;
         }
         
@@ -518,8 +516,7 @@ fmd( 'module', ['global','env','cache','lang','event','config'],
         mod.require = function( id ){
             
             var meta = { id: id };
-            event.emit( 'relative', meta, mod );
-            event.emit( 'alias', meta );
+            event.emit( 'alias', meta, mod );
             
             return Module.require( meta.id );
         };
@@ -590,45 +587,15 @@ fmd( 'module', ['global','env','cache','lang','event','config'],
 
 
 /**
- * @module fmd/alias
- * @author Edgar <mail@edgar.im>
- * @version v0.3
- * @date 170105
- * */
-
-
-fmd( 'alias', ['config','event'],
-    function( config, event ){
-    'use strict';
-    
-    config.register({
-        keys: 'alias',
-        name: 'object'
-    });
-    
-    event.on( 'alias', function( meta ){
-        
-        var aliases = config.get( 'alias' ),
-            alias;
-        
-        if ( aliases && ( alias = aliases[meta.id] ) ){
-            meta.id = alias;
-        }
-    } );
-    
-} );
-
-
-/**
  * @module fmd/relative
  * @author Edgar <mail@edgar.im>
- * @version v0.1
- * @date 131118
+ * @version v0.2
+ * @date 170117
  * */
 
 
-fmd( 'relative', ['lang','event','module'],
-    function( lang, event, Module ){
+fmd( 'relative', ['lang','event'],
+    function( lang, event ){
     'use strict';
     
     var rCwd = /.*\//,
@@ -642,7 +609,7 @@ fmd( 'relative', ['lang','event','module'],
         },
         
         isDotStart: function( id ){
-            
+
             return id.charAt(0) === '.';
         },
         
@@ -664,9 +631,9 @@ fmd( 'relative', ['lang','event','module'],
     };
     
     
-    event.on( 'relative', function( meta, mod ){
-        
-        if ( relative.isDotStart( meta.id ) && mod && relative.hasSlash( mod.id ) ){
+    event.on( 'alias', function( meta, mod ){
+
+        if ( mod && mod.id && relative.isDotStart( meta.id ) && relative.hasSlash( mod.id ) ){
             mod._cwd || ( mod._cwd = relative.cwd( mod.id ) );
             
             meta.id = relative.resolve( mod._cwd, meta.id );
@@ -675,6 +642,37 @@ fmd( 'relative', ['lang','event','module'],
     
     
     return relative;
+    
+} );
+
+
+/**
+ * @module fmd/alias
+ * @author Edgar <mail@edgar.im>
+ * @version v0.3
+ * @date 170118
+ * */
+
+
+fmd( 'alias', ['config','event'],
+    function( config, event ){
+    'use strict';
+    
+    config.register({
+        key: 'alias',
+        name: 'object'
+    });
+    
+    event.on( 'alias', function( meta ){
+        
+        var aliases = config.get( 'alias' ),
+            alias;
+        
+        if ( aliases && ( alias = aliases[meta.id] ) ){
+            meta.nominalId = meta.id;
+            meta.id = alias;
+        }
+    } );
     
 } );
 
@@ -692,7 +690,7 @@ fmd( 'resolve', ['event','config'],
     'use strict';
 
     config.register({
-        keys: 'resolve',
+        key: 'resolve',
         name: 'array'
     });
 
@@ -749,7 +747,7 @@ fmd( 'id2url', ['global','event','config'],
     });
     
     config.register({
-        keys: 'stamp',
+        key: 'stamp',
         name: 'object'
     });
     
@@ -811,7 +809,7 @@ fmd( 'id2url', ['global','event','config'],
  * @module fmd/assets
  * @author Edgar <mail@edgar.im>
  * @version v0.2
- * @date 170104
+ * @date 170117
  * */
 
 
@@ -827,8 +825,7 @@ fmd( 'assets', ['cache','lang','event','config','module'],
             
             var asset = { id: id };
             event.emit( 'analyze', asset );
-            event.emit( 'relative', asset, meta );
-            event.emit( 'alias', asset );
+            event.emit( 'alias', asset, meta );
             
             if ( id2uriMap[asset.id] ){
                 return assetsCache[ id2uriMap[asset.id] ];
@@ -1269,8 +1266,8 @@ fmd( 'use', ['lang','event','module','remote'],
 /**
  * @module fmd/async
  * @author Edgar <mail@edgar.im>
- * @version v0.2
- * @date 131015
+ * @version v0.3
+ * @date 170118
  * */
 
 
@@ -1293,7 +1290,7 @@ fmd( 'async', ['config','module','remote'],
     
     
     config.register({
-        keys: 'async',
+        key: 'async',
         rule: function( current, key, val ){
             
             val = !!val;
@@ -1314,8 +1311,8 @@ fmd( 'async', ['config','module','remote'],
 /**
  * @module fmd/logger
  * @author Edgar <mail@edgar.im>
- * @version v0.1
- * @date 131007
+ * @version v0.2
+ * @date 170118
  * */
 
 
@@ -1344,7 +1341,7 @@ fmd( 'logger', ['global','require','env','config','assets','loader','console'],
     
     
     config.register({
-        keys: 'debug',
+        key: 'debug',
         rule: function( current, key, val ){
             createLogger( val );
             this.debug = val;

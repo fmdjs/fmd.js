@@ -2,7 +2,7 @@
  * @module fmd/plugin
  * @author Edgar <mail@edgar.im>
  * @version v0.2
- * @date 170104
+ * @date 170118
  * */
 
 
@@ -83,7 +83,7 @@ fmd( 'plugin', ['cache','lang','event','config','when','remote'],
     
     
     config.register({
-        keys: 'plugin',
+        key: 'plugin',
         rule: function( current, key, val ){
             
             val = !!val;

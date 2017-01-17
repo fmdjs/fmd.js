@@ -1,8 +1,8 @@
 /**
  * @module fmd/logger
  * @author Edgar <mail@edgar.im>
- * @version v0.1
- * @date 131007
+ * @version v0.2
+ * @date 170118
  * */
 
 
@@ -31,7 +31,7 @@ fmd( 'logger', ['global','require','env','config','assets','loader','console'],
     
     
     config.register({
-        keys: 'debug',
+        key: 'debug',
         rule: function( current, key, val ){
             createLogger( val );
             this.debug = val;

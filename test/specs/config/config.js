@@ -1,13 +1,14 @@
 /**
  * @fileoverview unit testing for fmd/config
  * @author Edgar
- * @date 131015
+ * @date 170118
  * */
 
 fmd( 'specs/config', ['config'], function( config ){
     describe( 'fmd/config', function(){
         
         var configCache = fmd.cache.config,
+            configKeys = fmd.cache.configKeys,
             configRules = fmd.cache.configRules;
         
         it( 'config.register rule', function(){
@@ -21,10 +22,10 @@ fmd( 'specs/config', ['config'], function( config ){
                 rule: ruleA
             });
             
-            expect(configRules.ruleA.rule.toString()).toEqual(ruleA.toString());
+            expect(configRules.ruleA.toString()).toEqual(ruleA.toString());
         } );
         
-        it( 'config.register keys', function(){
+        it( 'config.register keys & key', function(){
             config.register({
                 name:'ruleB',
                 rule: function( current, key, val ){
@@ -32,10 +33,11 @@ fmd( 'specs/config', ['config'], function( config ){
                     this[key] = val;
                 }
             });
-            config.register( { keys:'logLevel1', name: 'ruleB' } );
-            var a = configRules.ruleB.keys.slice();
-            config.register( {keys:'log1', name:'ruleB'} );
-            var b = configRules.ruleB.keys.slice();
+            config.register( { keys: 'logLevel1', name: 'ruleB' } );
+            //var a = configRules.ruleB.keys.slice();
+            config.register( { key: 'log1', name: 'ruleB' } );
+            config.register( { keys: ['log2','log3'], name: 'ruleB' } );
+            //var b = configRules.ruleB.keys.slice();
             
             var c = configCache.debug2;
             config.set({
@@ -50,9 +52,14 @@ fmd( 'specs/config', ['config'], function( config ){
             var g = configCache.debug2;
             var h = configCache.log1;
             var i = configCache.logLevel1;
+            config.set({
+                'log2': 'logggg'
+            });
+            var j = configCache.debug2;
+            var k = configCache.log2;
             
-            expect(a).toEqual(['logLevel1']);
-            expect(b).toEqual(['logLevel1','log1']);
+            //expect(a).toEqual(['logLevel1']);
+            //expect(b).toEqual(['logLevel1','log1']);
             expect(c).toEqual(undefined);
             expect(d).toEqual(false);
             expect(e).toEqual('log');
@@ -60,6 +67,10 @@ fmd( 'specs/config', ['config'], function( config ){
             expect(g).toEqual(true);
             expect(h).toEqual('debug');
             expect(i).toEqual('log');
+            expect(j).toEqual(false);
+            expect(k).toEqual('logggg');
+            expect(configKeys.log2).toEqual('ruleB');
+            expect(configKeys.log2).toEqual(configKeys.log3);
         } );
         
         it( 'config.register', function(){
@@ -70,7 +81,7 @@ fmd( 'specs/config', ['config'], function( config ){
             exist = exist.join(',');
             
             config.register({
-                keys: 'xxx',
+                key: 'xxx',
                 rule: function( current, key, val ){
                     this[key] = current > 0 ? ( current + val ) : val;
                 }
@@ -85,7 +96,7 @@ fmd( 'specs/config', ['config'], function( config ){
             }
 
             expect(newRule).toBeDefined();
-            expect(configRules[newRule].keys[0]).toEqual('xxx');
+            expect(configKeys['xxx']).toEqual(newRule);
             expect(configCache.xxx).toEqual(undefined);
             
             config.set({

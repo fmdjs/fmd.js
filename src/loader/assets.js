@@ -2,7 +2,7 @@
  * @module fmd/assets
  * @author Edgar <mail@edgar.im>
  * @version v0.2
- * @date 170104
+ * @date 170117
  * */
 
 
@@ -18,8 +18,7 @@ fmd( 'assets', ['cache','lang','event','config','module'],
             
             var asset = { id: id };
             event.emit( 'analyze', asset );
-            event.emit( 'relative', asset, meta );
-            event.emit( 'alias', asset );
+            event.emit( 'alias', asset, meta );
             
             if ( id2uriMap[asset.id] ){
                 return assetsCache[ id2uriMap[asset.id] ];

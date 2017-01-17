@@ -4,10 +4,9 @@
   "main": "dist/fmd.js",
   "ignore": [
     ".*",
-    "lib",
     "test",
     "Gruntfile.js",
     "LICENSE.txt",
-    "package.json"
+    "node_modules"
   ]
 }

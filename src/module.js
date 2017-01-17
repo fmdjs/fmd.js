@@ -1,8 +1,8 @@
 /**
  * @module fmd/module
  * @author Edgar <mail@edgar.im>
- * @version v0.3.2
- * @date 150211
+ * @version v0.4
+ * @date 170117
  * */
 
 
@@ -29,9 +29,9 @@ fmd( 'module', ['global','env','cache','lang','event','config'],
     
     
     /**
-     * key-modules
+     * builtin-modules
      * */
-    var keyModules = {
+    var builtinModules = {
         'require': function( mod ){
             
             mod.require || Module.makeRequire( mod );
@@ -52,6 +52,10 @@ fmd( 'module', ['global','env','cache','lang','event','config'],
             };
             
             return mod.module;
+        },
+        '@fmd': function(){
+
+            return env;
         }
     };
     
@@ -96,7 +100,7 @@ fmd( 'module', ['global','env','cache','lang','event','config'],
             if ( lang.isArray( deps ) ){
                 lang.forEach( deps, function( id ){
                     var mid, hook;
-                    if ( hook = keyModules[id] ){
+                    if ( hook = builtinModules[id] ){
                         mid = hook( mod );
                     } else {
                         mod.require || Module.makeRequire( mod );
@@ -139,7 +143,7 @@ fmd( 'module', ['global','env','cache','lang','event','config'],
     
     Module.has = function( id, deep ){
         
-        if ( keyModules[id] ){
+        if ( builtinModules[id] ){
             return true;
         }
         
@@ -180,8 +184,7 @@ fmd( 'module', ['global','env','cache','lang','event','config'],
         mod.require = function( id ){
             
             var meta = { id: id };
-            event.emit( 'relative', meta, mod );
-            event.emit( 'alias', meta );
+            event.emit( 'alias', meta, mod );
             
             return Module.require( meta.id );
         };

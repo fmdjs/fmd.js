@@ -2,7 +2,7 @@
  * @module fmd/combo
  * @author Edgar <mail@edgar.im>
  * @version v0.3
- * @date 170104
+ * @date 170118
  * */
 
 
@@ -208,7 +208,7 @@ fmd( 'combo', ['cache','lang','event','config','module','assets','plugin','when'
     
     
     config.register({
-        keys: 'combo',
+        key: 'combo',
         rule: function( current, key, val ){
             
             val = !!val;

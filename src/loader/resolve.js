@@ -11,7 +11,7 @@ fmd( 'resolve', ['event','config'],
     'use strict';
 
     config.register({
-        keys: 'resolve',
+        key: 'resolve',
         name: 'array'
     });
 
