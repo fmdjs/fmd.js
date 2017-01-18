@@ -24,8 +24,7 @@ module.exports = function( grunt ){
         'src/loader/loader.js',
         'src/loader/remote.js',
         'src/injector/use.js',
-        'src/injector/async.js',
-        'src/helper/logger.js'
+        'src/injector/async.js'
     ];
     
     grunt.initConfig({

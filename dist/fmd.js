@@ -1,4 +1,4 @@
-/*! fmd.js v0.3.0 | http://fmdjs.org/ | MIT */
+/*! fmd.js v1.0.0 | http://fmdjs.org/ | MIT */
 /**
  * @module fmd/boot
  * @author Edgar <mail@edgar.im>
@@ -50,7 +50,7 @@
     };
     
     
-    fmd.version = '0.3.0';
+    fmd.version = '1.0.0';
     
     fmd.cache = {
         parts: parts
@@ -1303,49 +1303,6 @@ fmd( 'async', ['config','module','remote'],
     })
     .set({
         async: true
-    });
-    
-} );
-
-
-/**
- * @module fmd/logger
- * @author Edgar <mail@edgar.im>
- * @version v0.2
- * @date 170118
- * */
-
-
-fmd( 'logger', ['global','require','env','config','assets','loader','console'],
-    function( global, require, env, config, assets, loader, console ){
-    'use strict';
-    
-    var noop = env.log = function(){},
-        sysConsole = global.console;
-    
-    var createLogger = function( isDebug ){
-        
-        env.log = isDebug ? ( sysConsole && sysConsole.warn ? function( message, level ){
-            sysConsole[ level || 'log' ]( message );
-        } : function( message, level ){
-            if ( console ){
-                console( message, level );
-            } else if ( loader ) {
-                loader( assets.make('fmd/console'), function(){
-                    console || ( console = require('console') );
-                    console( message, level );
-                } );
-            }
-        } ) : noop;
-    };
-    
-    
-    config.register({
-        key: 'debug',
-        rule: function( current, key, val ){
-            createLogger( val );
-            this.debug = val;
-        }
     });
     
 } );
