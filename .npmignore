@@ -1,6 +1,5 @@
 node_modules/
-/assets/
-docs/
-examples/
-index.html
-auto-pull*
+test/
+.jshintrc
+.gitignore
+bower.json

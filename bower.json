@@ -1,12 +1,10 @@
 {
   "name": "fmd.js",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "main": "dist/fmd.js",
   "ignore": [
     ".*",
     "test",
-    "Gruntfile.js",
-    "LICENSE.txt",
     "node_modules"
   ]
 }
