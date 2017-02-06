@@ -24,7 +24,7 @@ fmd( 'resolve', ['event','config'],
             for ( var i = 0, l = resolveQueue.length; i < l; i++ ){
                 uri = resolveQueue[i]( asset.id );
 
-                if ( uri !== asset.id ){
+                if ( uri !== undefined && uri !== asset.id ){
                     break;
                 }
             }

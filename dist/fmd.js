@@ -703,7 +703,7 @@ fmd( 'resolve', ['event','config'],
             for ( var i = 0, l = resolveQueue.length; i < l; i++ ){
                 uri = resolveQueue[i]( asset.id );
 
-                if ( uri !== asset.id ){
+                if ( uri !== undefined && uri !== asset.id ){
                     break;
                 }
             }
@@ -722,7 +722,7 @@ fmd( 'resolve', ['event','config'],
  * @module fmd/id2url
  * @author Edgar <mail@edgar.im>
  * @version v0.3
- * @date 170104
+ * @date 170206
  * */
 
 
@@ -784,15 +784,19 @@ fmd( 'id2url', ['global','event','config'],
     id2url = function( asset ){
         
         event.emit( 'resolve', asset );
-        asset.url = asset.uri;
-        
+
         addBaseUrl( asset );
         addExtname( asset );
         
         event.emit( 'stamp', asset );
     };
     
-    
+
+    event.on( 'resolve', function( asset ){
+
+        asset.url = asset.uri;
+    } );
+
     event.on( 'stamp', addStamp );
     event.on( 'id2url', id2url );
 

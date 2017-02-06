@@ -99,7 +99,6 @@ module.exports = function( grunt ){
     grunt.loadNpmTasks('grunt-gcc');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-markdown');
     grunt.loadNpmTasks('grunt-contrib-clean');
 
     grunt.registerTask('build', ['jshint','clean','concat','replace','gcc','copy']);
