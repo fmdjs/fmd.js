@@ -59,10 +59,9 @@ module.exports = function( grunt ){
                 }
             }
         },
-        gcc: {
+        closurecompiler: {
             merge: {
                 options: {
-                    banner: bannerTpl,
                     create_source_map: 'dist/fmd.min.js.map'
                 },
                 files: {
@@ -96,12 +95,12 @@ module.exports = function( grunt ){
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-replace');
-    grunt.loadNpmTasks('grunt-gcc');
+    grunt.loadNpmTasks('grunt-closurecompiler');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-clean');
 
-    grunt.registerTask('build', ['jshint','clean','concat','replace','gcc','copy']);
+    grunt.registerTask('build', ['jshint','clean','concat','replace','closurecompiler','copy']);
     
     grunt.registerTask('default', ['build']);
 
