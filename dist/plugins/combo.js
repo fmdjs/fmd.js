@@ -1,4 +1,237 @@
-fmd("combo","cache lang event config module assets plugin when loader preload".split(" "),function(t,g,h,e,u,v,m,w,x,y){var z=t.combo={},A=/\.css(?:\?|$)/i,B=/(^\w+\:\/\/[\w\-\.:]+\/)(.+)/i,k=["??",","],n=1500,p=function(a){var b=k[0],c=k[1];return b&&0<a.indexOf(b)||c&&0<a.indexOf(c)},q=function(a,b){1<a.included.length||"_combo_non"===a.plugin?(h.emit("stamp",a),z[a.url]=a,b.push(a)):delete a.included[0].requested},r=function(a){if(!(2>a.length)){e.get("comboSyntax")&&(k=e.get("comboSyntax"));e.get("comboMaxLength")&&
-(n=e.get("comboMaxLength"));for(var b,c,d=[],f=0;f<a.length;f++)b=a[f],"async"!==b.plugin&&"non"!==b.plugin||(b.comboed||b.state||b.preState)||(A.test(b.url)&&!p(b.url)?d.push(b):b.url===b.id?(c=u.get(b.id))&&!c.compiled&&g.forEach(c.deps,function(b){a.push(v.make(b,c))}):p(b.url)||d.push(b));d.length&&C(d,a)}},C=function(a,b){var c,d,f,e,l={},h=function(b,a){return l[b]={id:"",url:a._host,plugin:"_combo",included:[]}};g.forEach(a,function(a){var e=a.url.split("?fmd.stamp")[0],g=e.substring(e.lastIndexOf(".")),
-e=e.match(B);a._host=e[1];a._path=e[2];c=[g,a._host].join("_");d=l[c]||h(c,a);f=d.url+k[d.url===a._host?0:1]+a._path;f.length>n&&(q(d,b),delete l[c],d=h(c,a),f=d.url+k[d.url===a._host?0:1]+a._path);d.id+=a.id+" ";d.url=f;d.included.push(a);"non"===a.plugin&&(d.plugin="_combo_non",a.plugin="async");a.comboed=!0;a.requested=!0});for(e in l)q(l[e],b)},s=function(a){g.forEach(a.included,function(a){h.emit("requestComplete",a)})},D=function(a){w.apply(null,g.map(this.group,function(a){return function(c){x(a,
-function(){s(a);c.resolve()})}})).then(a)},E=function(a){var b=this.group;y(b,function(){g.forEach(b,function(a){s(a)});a()})};e.register({keys:"combo",rule:function(a,b,c){c=!!c;a!==c&&(this.combo=c,!0===c?(h.on("fetch",r),m.register("_combo",D),m.register("_combo_non",E)):(h.off("fetch",r),m.register("_combo",null),m.register("_combo_non",null)))}}).set({combo:!0})});
+/**
+ * @module fmd/combo
+ * @author Edgar <mail@edgar.im>
+ * @version v0.3
+ * @date 170118
+ * */
+
+
+fmd( 'combo', ['cache','lang','event','config','module','assets','plugin','when','loader','preload'],
+    function( cache, lang, event, config, Module, assets, plugin, when, loader, preload ){
+    'use strict';
+    
+    /**
+     * Thanks to:
+     * seajs-combo, https://github.com/seajs/seajs-combo/blob/master/src/seajs-combo.js
+     * */
+     
+    var comboCache = cache.combo = {};
+    
+    var PLUGIN_ASYNC = 'async',
+        PLUGIN_NON = 'non',
+        PLUGIN_COMBO = '_combo',
+        PLUGIN_COMBO_NON = '_combo_non';
+    
+    var rStyle = /\.css(?:\?|$)/i,
+        rSplitUrl = /(^\w+\:\/\/[\w\-\.:]+\/)(.+)/i;
+    
+    var comboSyntax = ['??', ','],
+        comboMaxLength = 1500;
+    
+    
+    var isComboUrl = function( url ){
+        
+        var start = comboSyntax[0],
+            bound = comboSyntax[1];
+            
+        return ( start && url.indexOf( start ) > 0 ) || ( bound && url.indexOf( bound ) > 0 );
+    },
+    
+    getExt = function( url ){
+        
+        return url.substring( url.lastIndexOf('.') );
+    },
+    
+    splitUrl = function( url, asset ){
+        
+        var result = url.match( rSplitUrl );
+        
+        asset._host = result[1];
+        asset._path = result[2];
+    },
+    
+    makeId = function( asset ){
+        
+        var url = asset.url.split('?fmd.stamp')[0],
+            ext = getExt( url );
+            
+        splitUrl( url, asset );
+        
+        return [ ext, asset._host ].join('_');
+    },
+    
+    pushGroup = function( meta, group ){
+        
+        if ( meta.included.length > 1 || meta.plugin === PLUGIN_COMBO_NON ){
+            event.emit( 'stamp', meta );
+            comboCache[meta.url] = meta;
+            group.push( meta );
+        } else {
+            var asset = meta.included[0];
+            delete asset.requested;
+        }
+    },
+    
+    makeUrl = function( meta, asset ){
+        return meta.url + comboSyntax[ meta.url === asset._host ? 0 : 1 ] + asset._path;
+    };
+    
+    
+    var onFetch = function( group ){
+        
+        if ( group.length < 2 ){
+            return;
+        }
+        
+        config.get( 'comboSyntax' ) && ( comboSyntax = config.get( 'comboSyntax' ) );
+        config.get( 'comboMaxLength' ) && ( comboMaxLength = config.get( 'comboMaxLength' ) );
+        
+        var asset, mod, needComboGroup = [];
+        
+        for ( var i = 0; i < group.length; i++ ){
+            asset = group[i];
+            
+            if ( !( asset.plugin === PLUGIN_ASYNC || asset.plugin === PLUGIN_NON ) || asset.comboed || asset.state || asset.preState  ){
+                continue;
+            }
+            
+            if ( rStyle.test( asset.url ) && !isComboUrl( asset.url ) ){
+                needComboGroup.push( asset );
+                continue;
+            }
+            
+            if ( asset.url === asset.id ){
+                mod = Module.get( asset.id );
+                
+                if ( mod && !mod.compiled ){
+                    lang.forEach( mod.deps, function( id ){
+                        group.push( assets.make( id, mod ) );
+                    } );
+                }
+                
+                continue;
+            }
+            
+            if ( !isComboUrl( asset.url ) ){
+                needComboGroup.push( asset );
+            }
+        }
+        
+        if ( needComboGroup.length ){
+            extract( needComboGroup, group );
+        }
+    },
+    
+    extract = function( needComboGroup, group ){
+        
+        var id, meta, comboUrl, cacheId,
+            cache = {};
+        
+        var makeMeta = function( id, asset ){
+            
+            var meta = cache[id] = {
+                id: '',
+                url: asset._host,
+                plugin: PLUGIN_COMBO,
+                included: []
+            };
+            
+            return meta;
+        };
+        
+        lang.forEach( needComboGroup, function( asset ){
+            
+            id = makeId( asset );
+            meta = cache[id] || makeMeta( id, asset );
+            
+            comboUrl = makeUrl( meta, asset );
+            
+            if ( comboUrl.length > comboMaxLength ){
+                pushGroup( meta, group );
+                delete cache[id];
+                
+                meta = makeMeta( id, asset );
+                comboUrl = makeUrl( meta, asset );
+            }
+
+            meta.id += ( asset.id + ' ' );
+            meta.url = comboUrl;
+            meta.included.push( asset );
+            if ( asset.plugin === PLUGIN_NON ){
+                meta.plugin = PLUGIN_COMBO_NON;
+                asset.plugin = PLUGIN_ASYNC;
+            }
+            asset.comboed = true;
+            asset.requested = true;
+        } );
+        
+        for ( cacheId in cache ){
+            pushGroup( cache[cacheId], group );
+        }
+    },
+    
+    complete = function( meta ){
+        
+        lang.forEach( meta.included, function( asset ){
+            event.emit( 'requestComplete', asset );
+        } );
+    };
+    
+    
+    var comboExecute = function( callback ){
+        
+        when.apply( null, lang.map( this.group, function( meta ){
+            return function( promise ){
+                
+                loader( meta, function(){
+                    
+                    complete( meta );
+                    promise.resolve();
+                } );
+            };
+        } ) ).then( callback );
+    },
+    
+    comboNonExecute = function( callback ){
+        
+        var group = this.group;
+        
+        preload( group, function(){
+            
+            lang.forEach( group, function( meta ){
+                complete( meta );
+            } );
+            
+            callback();
+        } );
+    };
+    
+    
+    config.register({
+        key: 'combo',
+        rule: function( current, key, val ){
+            
+            val = !!val;
+            
+            if ( current === val ){
+                return;
+            }
+            
+            this.combo = val;
+            
+            if ( val === true ){
+                event.on( 'fetch', onFetch );
+                plugin.register( PLUGIN_COMBO, comboExecute );
+                plugin.register( PLUGIN_COMBO_NON, comboNonExecute );
+            } else {
+                event.off( 'fetch', onFetch );
+                plugin.register( PLUGIN_COMBO, null );
+                plugin.register( PLUGIN_COMBO_NON, null );
+            }
+        }
+    })
+    .set({
+        combo: true
+    });
+    
+} );

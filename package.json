@@ -1,36 +1,33 @@
 {
-    "name": "fmd.js",
-    "version": "0.2.8",
-    "description": "another module writing system",
-    "keywords": ["FMD","module","fmd.js","AMD","loader"],
-    "homepage": "http://fmdjs.org/",
-    "bugs": {
-        "url": "https://github.com/fmdjs/fmd.js/issues"
-    },
-    "licenses": [{
-        "type": "MIT",
-        "url": "http://opensource.org/licenses/MIT"
-    }],
-    "author": {
-        "name": "Edgar Hoo",
-        "email": "mail@edgar.im",
-        "url": "http://edgar.im/"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/fmdjs/fmd.js.git"
-    },
-    "engines": {
-        "node": ">=0.8.0"
-    },
-    "devDependencies": {
-        "grunt": "~0.4.0",
-        "grunt-gcc": "~0.2.2",
-        "grunt-contrib-jshint": "~0.1.1",
-        "grunt-contrib-concat": "~0.3.0",
-        "grunt-replace": "~0.5.0",
-        "grunt-markdown": "~0.4.0",
-        "grunt-contrib-clean": "~0.5.0",
-        "grunt-contrib-copy": "~0.4.1"
-    }
+  "name": "fmd.js",
+  "version": "1.0.0",
+  "description": "another module writing system",
+  "keywords": ["FMD","module","fmd.js","AMD","loader"],
+  "homepage": "http://fmdjs.org/",
+  "license": "MIT",
+  "main": "lib/fmd.js",
+  "bugs": {
+    "url": "https://github.com/fmdjs/fmd.js/issues"
+  },
+  "author": {
+    "name": "Edgar Hoo",
+    "email": "mail@edgar.im",
+    "url": "http://edgar.im/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/fmdjs/fmd.js.git"
+  },
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.0",
+    "grunt-closurecompiler": "~0.9.9",
+    "grunt-contrib-jshint": "~0.1.1",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-replace": "~0.5.0",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-copy": "~0.4.1"
+  }
 }

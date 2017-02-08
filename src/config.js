@@ -1,8 +1,8 @@
 /**
  * @module fmd/config
  * @author Edgar <mail@edgar.im>
- * @version v0.2
- * @date 131022
+ * @version v0.3
+ * @date 170117
  * */
 
 
@@ -11,64 +11,58 @@ fmd( 'config', ['env','cache','lang'],
     'use strict';
     
     var configCache = cache.config = {},
-        rulesCache = cache.configRules = {};
+        configKeysCache = cache.configKeys = {},
+        configRulesCache = cache.configRules = {};
     
     var ANONYMOUS_RULE_PREFIX = '_rule_';
     
     var ruleUid = 0;
     
     
-    var applyRules = function( current, key, val ){
+    var applyRule = function( current, key, val, ruleName ){
         
-        var hasApply = false,
-            item;
+        var rule = configRulesCache[ruleName];
 
-        for ( var name in rulesCache ){
-            if ( !hasApply ){
-                item = rulesCache[name];
-                hasApply = lang.inArray( item.keys, key ) > -1 && ( item.rule.call( configCache, current, key, val ) === undefined );
-            } else {
-                break;
-            }
+        if ( rule ){
+            return rule.call( configCache, current, key, val ) === undefined;
         }
-        
-        return hasApply;
+
+        return false;
     };
     
     
     var config = {
         get: function( key ){
+
             return configCache[key];
         },
         set: function( options ){
+
             for ( var key in options ){
                 var current = configCache[key],
-                    val = options[key];
+                    val = options[key],
+                    ruleName = configKeysCache[key];
                 
-                if ( !applyRules( current, key, val ) ){
+                if ( !ruleName || !applyRule( current, key, val, ruleName ) ){
                     configCache[key] = val;
                 }
             }
         },
         register: function( o ){
             
-            var item;
-            
             if ( lang.isFunction( o.rule ) ){
                 o.name || ( o.name = ANONYMOUS_RULE_PREFIX + ( ruleUid++ ) );
-                
-                item = rulesCache[o.name] = {
-                    rule: o.rule,
-                    keys: []
-                };
+                configRulesCache[o.name] = o.rule;
             }
-            
-            item || ( item = rulesCache[o.name] );
-            
-            if ( item && o.keys ){
-                lang.isArray( o.keys ) ?
-                    ( item.keys = item.keys.concat( o.keys ) ) :
-                    item.keys.push( o.keys );
+
+            if ( configRulesCache[o.name] && ( o.key || o.keys ) ){
+                if ( lang.isArray( o.keys ) ){
+                    lang.forEach( o.keys, function( key ){
+                        configKeysCache[key] = o.name;
+                    } );
+                } else {
+                    configKeysCache[ o.key || o.keys ] = o.name;
+                }
             }
             
             return this;

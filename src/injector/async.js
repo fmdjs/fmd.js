@@ -1,8 +1,8 @@
 /**
  * @module fmd/async
  * @author Edgar <mail@edgar.im>
- * @version v0.2
- * @date 131015
+ * @version v0.3
+ * @date 170118
  * */
 
 
@@ -25,7 +25,7 @@ fmd( 'async', ['config','module','remote'],
     
     
     config.register({
-        keys: 'async',
+        key: 'async',
         rule: function( current, key, val ){
             
             val = !!val;

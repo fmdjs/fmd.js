@@ -1,37 +1,37 @@
 {
-    "passfail": false,
-    
-    "browser": true,
-    "globals": {
-        "fmd": true
-    },
-    
-    "devel": false,
-    "debug": false,
-    
-    "es5": true,
-    "strict": true,
-    "esnext": false,
-    
-    "asi": false,
-    "boss": true,
-    "curly": true,
-    "expr": true,
-    "eqeqeq": true,
-    "eqnull": false,
-    "evil": false,
-    "forin": false,
-    "immed": true,
-    "laxbreak": false,
-    "newcap": true,
-    "noarg": true,
-    "noempty": true,
-    "nomen": false,
-    "plusplus": false,
-    "undef": true,
-    "sub": true,
-    "white": false,
-    "proto": true,
-    "loopfunc": true,
-    "undef": true
+  "passfail": false,
+
+  "browser": true,
+  "globals": {
+    "fmd": true,
+    "global": true
+  },
+
+  "devel": false,
+  "debug": false,
+
+  "es5": true,
+  "strict": true,
+  "esnext": false,
+
+  "asi": false,
+  "boss": true,
+  "curly": true,
+  "expr": true,
+  "eqeqeq": true,
+  "eqnull": false,
+  "evil": false,
+  "forin": false,
+  "immed": true,
+  "laxbreak": false,
+  "newcap": true,
+  "noarg": true,
+  "noempty": true,
+  "nomen": false,
+  "plusplus": false,
+  "sub": true,
+  "white": false,
+  "proto": true,
+  "loopfunc": true,
+  "undef": true
 }

@@ -1,8 +1,8 @@
 /**
  * @module fmd/id2url
  * @author Edgar <mail@edgar.im>
- * @version v0.2.3
- * @date 140516
+ * @version v0.3
+ * @date 170206
  * */
 
 
@@ -12,10 +12,7 @@ fmd( 'id2url', ['global','event','config'],
     
     var rAbsolute = /^https?:\/\//i;
     
-    var TIME_STAMP = ( new Date() ).getTime(),
-        RESOLVE = 'resolve',
-        STAMP = 'stamp';
-    
+    var TIME_STAMP = ( new Date() ).getTime();
     
     config.set({
         baseUrl: (function(){
@@ -30,34 +27,12 @@ fmd( 'id2url', ['global','event','config'],
     });
     
     config.register({
-        keys: RESOLVE,
-        name: 'array'
-    })
-    .register({
-        keys: STAMP,
+        key: 'stamp',
         name: 'object'
     });
     
     
-    var parseResolve = function( asset ){
-            
-        var resolve = config.get( RESOLVE ),
-            url;
-        
-        if ( resolve ){
-            for ( var i = 0, l = resolve.length; i < l; i++ ){
-                url = resolve[i]( asset.id );
-                
-                if ( url !== asset.id ){
-                    break;
-                }
-            }
-        }
-        
-        asset.url = url ? url : asset.id;
-    },
-    
-    addBaseUrl = function( asset ){
+    var addBaseUrl = function( asset ){
         
         rAbsolute.test( asset.url ) || ( asset.url = config.get('baseUrl') + asset.url );
     },
@@ -72,12 +47,12 @@ fmd( 'id2url', ['global','event','config'],
     addStamp = function( asset ){
             
         var t = config.get('hasStamp') ? TIME_STAMP : null,
-            stamp = config.get( STAMP );
+            stampMap = config.get( 'stamp' );
             
-        if ( stamp ){
-            for ( var key in stamp ){
+        if ( stampMap ){
+            for ( var key in stampMap ){
                 if ( ( new RegExp( key ) ).test( asset.id ) ){
-                    t = stamp[key];
+                    t = stampMap[key];
                     break;
                 }
             }
@@ -88,17 +63,27 @@ fmd( 'id2url', ['global','event','config'],
     
     id2url = function( asset ){
         
-        event.emit( RESOLVE, asset );
-        
+        event.emit( 'resolve', asset );
+
         addBaseUrl( asset );
         addExtname( asset );
         
-        event.emit( STAMP, asset );
+        event.emit( 'stamp', asset );
     };
     
-    
-    event.on( RESOLVE, parseResolve );
-    event.on( STAMP, addStamp );
+
+    event.on( 'resolve', function( asset ){
+
+        asset.url = asset.uri;
+    } );
+
+    event.on( 'stamp', addStamp );
     event.on( 'id2url', id2url );
+
+    event.on( 'id2uri', function( asset ){
+
+        event.emit( 'id2url', asset );
+        asset.uri = asset.url;
+    } );
     
 } );

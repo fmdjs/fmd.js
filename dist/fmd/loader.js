@@ -1,2 +1,0 @@
-fmd("loader",["global","event","config","request"],function(d,c,e,f){var g=function(){};e.set({timeout:1E4});c.on("requestComplete",function(a){var b;a.state="loaded";for(b=a.onload;a=b.shift();)a()});return function(a,b){b||(b=g);"loaded"===a.state?b():"loading"===a.state?a.onload.push(b):(a.state="loading",a.onload=[b],c.emit("request",a,b),a.requested||(a.timer=d.setTimeout(function(){c.emit("requestTimeout",a)},e.get("timeout")),f(a,function(){d.clearTimeout(a.timer);c.emit("requestComplete",
-a)})))}});

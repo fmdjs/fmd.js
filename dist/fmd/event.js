@@ -1,1 +1,0 @@
-fmd("event",["env","cache"],function(g,h){var e=h.events={},k=[].slice,f={on:function(a,d){(e[a]||(e[a]=[])).push(d)},emit:function(a){var d=k.call(arguments,1),b=e[a],c,f=0;if(b)for(;c=b[f++];)c.apply(null,d)},off:function(a,d){var b=e[a];if(b)if(d)for(var c=b.length-1;0<=c;c--)b[c]===d&&b.splice(c,1);else delete e[a]}};g.on=f.on;g.off=f.off;return f});

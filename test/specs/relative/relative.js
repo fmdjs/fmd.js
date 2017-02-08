@@ -79,7 +79,7 @@ fmd('specs/relative',['event','relative'],function( event, relative ){
             } );
         } );
         
-        it( 'event relative', function(){
+        it( 'event alias', function(){
             var a = {
                 id: 'g3/d-d/aE'
             };
@@ -87,19 +87,22 @@ fmd('specs/relative',['event','relative'],function( event, relative ){
                 a2 = { id: './ei' },
                 a3 = { id: './../hgtr' },
                 a4 = { id: '../../ki' },
-                a5 = { id: 'erd/34543/ffe' };
+                a5 = { id: 'erd/34543/ffe' },
+                a6 = { id: '../asd' };
             
-            event.emit('relative', a1, a );
-            event.emit('relative', a2, a );
-            event.emit('relative', a3, a );
-            event.emit('relative', a4, a );
-            event.emit('relative', a5, a );
+            event.emit('alias', a1, a );
+            event.emit('alias', a2, a );
+            event.emit('alias', a3, a );
+            event.emit('alias', a4, a );
+            event.emit('alias', a5, a );
+            event.emit('alias', a6 );
             
             expect(a1.id).toEqual('g3/gf');
             expect(a2.id).toEqual('g3/d-d/ei');
             expect(a3.id).toEqual('g3/hgtr');
             expect(a4.id).toEqual('ki');
             expect(a5.id).toEqual('erd/34543/ffe');
+            expect(a6.id).toEqual('../asd');
             
             var b = {
                 id: ''
@@ -110,11 +113,11 @@ fmd('specs/relative',['event','relative'],function( event, relative ){
                 b4 = { id: '../../ki' },
                 b5 = { id: 'dfeAfe/ef0r-edw' };
             
-            event.emit('relative', b1, b );
-            event.emit('relative', b2, b );
-            event.emit('relative', b3, b );
-            event.emit('relative', b4, b );
-            event.emit('relative', b5, b );
+            event.emit('alias', b1, b );
+            event.emit('alias', b2, b );
+            event.emit('alias', b3, b );
+            event.emit('alias', b4, b );
+            event.emit('alias', b5, b );
             
             expect(b1.id).toEqual('../gf');
             expect(b2.id).toEqual('./ei');
@@ -131,12 +134,12 @@ fmd('specs/relative',['event','relative'],function( event, relative ){
                 c4 = { id: '../../ki' },
                 c5 = { id: 'nr3e/3wg' };
             
-            event.emit('relative', c1, c );
-            event.emit('relative', c2, c );
-            event.emit('relative', c3, c );
-            event.emit('relative', c4, c );
-            event.emit('relative', c5, c );
-            
+            event.emit('alias', c1, c );
+            event.emit('alias', c2, c );
+            event.emit('alias', c3, c );
+            event.emit('alias', c4, c );
+            event.emit('alias', c5, c );
+
             expect(c1.id).toEqual('../gf');
             expect(c2.id).toEqual('./ei');
             expect(c3.id).toEqual('./../hgtr');

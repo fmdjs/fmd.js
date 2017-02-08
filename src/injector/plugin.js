@@ -1,8 +1,8 @@
 /**
  * @module fmd/plugin
  * @author Edgar <mail@edgar.im>
- * @version v0.1
- * @date 131010
+ * @version v0.2
+ * @date 170118
  * */
 
 
@@ -13,9 +13,7 @@ fmd( 'plugin', ['cache','lang','event','config','when','remote'],
     var pluginCache = cache.plugin = {};
     
     var rPlugin = /(.+)!(.+)/;
-    
-    var ANALYZE = 'analyze';
-    
+
     
     var plugin = {
         defaultPlugin: 'async',
@@ -85,7 +83,7 @@ fmd( 'plugin', ['cache','lang','event','config','when','remote'],
     
     
     config.register({
-        keys: 'plugin',
+        key: 'plugin',
         rule: function( current, key, val ){
             
             val = !!val;
@@ -97,10 +95,10 @@ fmd( 'plugin', ['cache','lang','event','config','when','remote'],
             this.plugin = val;
             
             if ( val === true ){
-                event.on( ANALYZE, onAnalyze );
+                event.on( 'analyze', onAnalyze );
                 remote.bring = router;
             } else {
-                event.off( ANALYZE, onAnalyze );
+                event.off( 'analyze', onAnalyze );
                 remote.bring = remote.get;
             }
         }

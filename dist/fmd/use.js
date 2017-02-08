@@ -1,1 +1,0 @@
-fmd("use",["lang","event","module","remote"],function(c,b,d,e){b.on("makeRequire",function(b,f){b.use=function(a,b){c.isArray(a)||(a=[a]);e.fetch({id:f.id,deps:a},function(a){a=c.map(a,function(a){return d.require(a.id)});b&&b.apply(null,a)})}})});

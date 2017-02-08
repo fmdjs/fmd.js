@@ -105,7 +105,7 @@ describe( 'fmd语法', function(){
     } );
     
     
-    describe( 'require关键模块', function(){
+    describe( 'require关键字', function(){
         it( 'require', function(){
             var a;
             
@@ -135,7 +135,7 @@ describe( 'fmd语法', function(){
     } );
     
     
-    describe( 'exports关键模块', function(){
+    describe( 'exports关键字', function(){
         it( 'exports', function(){
             var a;
             
@@ -189,7 +189,7 @@ describe( 'fmd语法', function(){
     } );
     
     
-    describe( 'module关键模块', function(){
+    describe( 'module关键字', function(){
         it( 'module.id', function(){
             var a;
             
@@ -244,6 +244,17 @@ describe( 'fmd语法', function(){
             
             expect(b).toEqual('drcygui345y');
             expect(c).toEqual('67890pn4g');
+        } );
+    } );
+
+    describe( '@fmd内建模块', function(){
+        it( '@fmd等于全局变量fmd', function(){
+            var a;
+            define(['@fmd'], function($fmd){
+                a = $fmd === fmd;
+            });
+
+            expect(a).toEqual(true);
         } );
     } );
     

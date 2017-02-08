@@ -1,7 +1,7 @@
 /**
  * the Gruntfile for fmd.js
  * @author Edgar
- * @date 140219
+ * @date 170117
  * */
 
 module.exports = function( grunt ){
@@ -10,21 +10,21 @@ module.exports = function( grunt ){
     
     var source = [
         'src/boot.js',
-        'src/lang.js',
+        'src/utils/lang.js',
         'src/event.js',
         'src/config.js',
         'src/module.js',
-        'src/alias.js',
-        'src/relative.js',
-        'src/id2url.js',
-        'src/assets.js',
-        'src/when.js',
-        'src/request.js',
-        'src/loader.js',
-        'src/remote.js',
-        'src/use.js',
-        'src/async.js',
-        'src/logger.js'
+        'src/injector/relative.js',
+        'src/injector/alias.js',
+        'src/loader/resolve.js',
+        'src/loader/id2url.js',
+        'src/loader/assets.js',
+        'src/utils/when.js',
+        'src/loader/request.js',
+        'src/loader/loader.js',
+        'src/loader/remote.js',
+        'src/injector/use.js',
+        'src/injector/async.js'
     ];
     
     grunt.initConfig({
@@ -32,7 +32,7 @@ module.exports = function( grunt ){
         pkg: grunt.file.readJSON('package.json'),
 
         jshint: {
-            files: 'src/*.js',
+            files: ['src/*.js', 'src/*/*.js'],
             options: {
                 jshintrc: '.jshintrc'
             }
@@ -47,50 +47,25 @@ module.exports = function( grunt ){
                     banner: bannerTpl + '\n'
                 },
                 files: {
-                    'dist/fmd-debug.js': source
-                }
-            },
-            nonDebug: {
-                options: {
-                    separator: '\n\n'
-                },
-                files: {
-                    'dist/plugins/non-debug.js': ['src/preload.js','src/non.js']
+                    'dist/fmd.js': source
                 }
             },
             non: {
                 options: {
-                    separator: ''
+                    separator: '\n\n'
                 },
                 files: {
-                    'dist/plugins/non.js': ['dist/fmd/preload.js','dist/fmd/non.js']
+                    'dist/plugins/non.js': ['src/plugins/preload.js','src/plugins/non.js']
                 }
             }
         },
-        gcc: {
-            boot: {
-                options: {
-                    banner: bannerTpl
-                },
-                files: {
-                    'dist/fmd/boot.js': ['src/boot.js']
-                }
-            },
-            all: {
-                files: [{
-                    expand: true,
-                    cwd: 'src/',
-                    src: ['*.js','!boot.js'],
-                    dest: 'dist/fmd/',
-                    ext: '.js'
-                }]
-            },
+        closurecompiler: {
             merge: {
                 options: {
-                    banner: bannerTpl
+                    create_source_map: 'dist/fmd.min.js.map'
                 },
                 files: {
-                    'dist/fmd.js': ['dist/fmd-debug.js']
+                    'dist/fmd.min.js': ['dist/fmd.js']
                 }
             }
         },
@@ -102,21 +77,17 @@ module.exports = function( grunt ){
                         replacement: '<%= pkg.version %>'
                     }]
                 },
-                files: [{
-                    expand: true,
-                    flatten: true,
-                    src: ['dist/*.js'],
-                    dest: 'dist/'
-                }, {
-                    'dist/fmd/boot.js': ['dist/fmd/boot.js']
-                }]
+                files: {
+                    'dist/fmd.js': 'dist/fmd.js'
+                }
             }
         },
         copy: {
             combo: {
                 files: {
-                    'dist/plugins/combo.js': ['dist/fmd/combo.js'],
-                    'dist/plugins/combo-debug.js': ['src/combo.js']
+                    'dist/fmd/plugin.js': 'src/injector/plugin.js',
+                    'dist/plugins/combo.js': 'src/plugins/combo.js',
+                    'dist/fmd/console.js': 'src/helper/console.js'
                 }
             }
         }
@@ -124,15 +95,12 @@ module.exports = function( grunt ){
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-replace');
-    grunt.loadNpmTasks('grunt-gcc');
+    grunt.loadNpmTasks('grunt-closurecompiler');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-markdown');
     grunt.loadNpmTasks('grunt-contrib-clean');
 
-    grunt.registerTask('concatPluginNon', ['concat:nonDebug','concat:non']);
-    
-    grunt.registerTask('build', ['jshint','clean','concat:merge','gcc','concatPluginNon','replace','copy']);
+    grunt.registerTask('build', ['jshint','clean','concat','replace','closurecompiler','copy']);
     
     grunt.registerTask('default', ['build']);
 
