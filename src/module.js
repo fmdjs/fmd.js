@@ -1,8 +1,8 @@
 /**
  * @module fmd/module
  * @author Edgar <mail@edgar.im>
- * @version v0.4
- * @date 170117
+ * @version v0.5
+ * @date 170213
  * */
 
 
@@ -223,8 +223,8 @@ fmd( 'module', ['global','env','cache','lang','event','config'],
                 
             if ( exports !== UNDEFINED ){
                 mod.exports = exports;
-            } else {
-                mod.module && mod.module.exports && ( mod.exports = mod.module.exports );
+            } else if ( mod.module && mod.module.exports !== UNDEFINED ){
+                mod.exports = mod.module.exports;
             }
             
             mod.module && ( delete mod.module );
