@@ -1,4 +1,4 @@
-/*! fmd.js v1.0.0 | http://fmdjs.org/ | MIT */
+/*! fmd.js v1.0.2 | http://fmdjs.org/ | MIT */
 /**
  * @module fmd/boot
  * @author Edgar <mail@edgar.im>
@@ -50,7 +50,7 @@
     };
     
     
-    fmd.version = '1.0.0';
+    fmd.version = '1.0.2';
     
     fmd.cache = {
         parts: parts
@@ -333,8 +333,8 @@ fmd( 'config', ['env','cache','lang'],
 /**
  * @module fmd/module
  * @author Edgar <mail@edgar.im>
- * @version v0.4
- * @date 170117
+ * @version v0.5
+ * @date 170213
  * */
 
 
@@ -555,8 +555,8 @@ fmd( 'module', ['global','env','cache','lang','event','config'],
                 
             if ( exports !== UNDEFINED ){
                 mod.exports = exports;
-            } else {
-                mod.module && mod.module.exports && ( mod.exports = mod.module.exports );
+            } else if ( mod.module && mod.module.exports !== UNDEFINED ){
+                mod.exports = mod.module.exports;
             }
             
             mod.module && ( delete mod.module );
