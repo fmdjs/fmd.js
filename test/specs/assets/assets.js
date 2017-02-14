@@ -13,7 +13,7 @@ fmd( 'specs/assets', ['assets','event'], function( assets, event ){
             var a = assets.make('specs/assets/a');
             var b = assets.make('specs/assets/a');
             expect(a).toEqual(b);
-            expect(a.uri.indexOf('a.js') > 1 ).toEqual(true);
+            expect(a.url.indexOf('a.js') > 1 ).toEqual(true);
             
             a.isTest = 'true';
             expect(b.isTest).toEqual('true');
@@ -22,7 +22,7 @@ fmd( 'specs/assets', ['assets','event'], function( assets, event ){
             expect(c.isTest).toEqual('true');
             
             var d = assets.make('require');
-            expect(d.uri).toEqual(d.id);
+            expect(d.url).toEqual(d.id);
         } );
         
         it( 'assets.group', function(){

@@ -1,8 +1,8 @@
 /**
  * @module fmd/resolve
  * @author Edgar <mail@edgar.im>
- * @version v0.1
- * @date 170104
+ * @version v0.2
+ * @date 170213
  * */
 
 
@@ -18,19 +18,19 @@ fmd( 'resolve', ['event','config'],
     var parseResolve = function( asset ){
 
         var resolveQueue = config.get( 'resolve' ),
-            uri;
+            url;
 
         if ( resolveQueue ){
             for ( var i = 0, l = resolveQueue.length; i < l; i++ ){
-                uri = resolveQueue[i]( asset.id );
+                url = resolveQueue[i]( asset.id );
 
-                if ( uri !== undefined && uri !== asset.id ){
+                if ( url !== undefined && url !== asset.id ){
                     break;
                 }
             }
         }
 
-        asset.uri = uri ? uri : asset.id;
+        asset.url = url ? url : asset.id;
     };
 
 
