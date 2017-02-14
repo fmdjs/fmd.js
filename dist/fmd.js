@@ -1,4 +1,4 @@
-/*! fmd.js v1.0.2 | http://fmdjs.org/ | MIT */
+/*! fmd.js v1.1.0 | http://fmdjs.org/ | MIT */
 /**
  * @module fmd/boot
  * @author Edgar <mail@edgar.im>
@@ -50,7 +50,7 @@
     };
     
     
-    fmd.version = '1.0.2';
+    fmd.version = '1.1.0';
     
     fmd.cache = {
         parts: parts
@@ -680,8 +680,8 @@ fmd( 'alias', ['config','event'],
 /**
  * @module fmd/resolve
  * @author Edgar <mail@edgar.im>
- * @version v0.1
- * @date 170104
+ * @version v0.2
+ * @date 170213
  * */
 
 
@@ -697,19 +697,19 @@ fmd( 'resolve', ['event','config'],
     var parseResolve = function( asset ){
 
         var resolveQueue = config.get( 'resolve' ),
-            uri;
+            url;
 
         if ( resolveQueue ){
             for ( var i = 0, l = resolveQueue.length; i < l; i++ ){
-                uri = resolveQueue[i]( asset.id );
+                url = resolveQueue[i]( asset.id );
 
-                if ( uri !== undefined && uri !== asset.id ){
+                if ( url !== undefined && url !== asset.id ){
                     break;
                 }
             }
         }
 
-        asset.uri = uri ? uri : asset.id;
+        asset.url = url ? url : asset.id;
     };
 
 
@@ -721,8 +721,8 @@ fmd( 'resolve', ['event','config'],
 /**
  * @module fmd/id2url
  * @author Edgar <mail@edgar.im>
- * @version v0.3
- * @date 170206
+ * @version v0.4
+ * @date 170213
  * */
 
 
@@ -792,28 +792,17 @@ fmd( 'id2url', ['global','event','config'],
     };
     
 
-    event.on( 'resolve', function( asset ){
-
-        asset.url = asset.uri;
-    } );
-
     event.on( 'stamp', addStamp );
     event.on( 'id2url', id2url );
 
-    event.on( 'id2uri', function( asset ){
-
-        event.emit( 'id2url', asset );
-        asset.uri = asset.url;
-    } );
-    
 } );
 
 
 /**
  * @module fmd/assets
  * @author Edgar <mail@edgar.im>
- * @version v0.2
- * @date 170117
+ * @version v0.3
+ * @date 170213
  * */
 
 
@@ -822,7 +811,7 @@ fmd( 'assets', ['cache','lang','event','config','module'],
     'use strict';
     
     var assetsCache = cache.assets = {},
-        id2uriMap = {};
+        id2urlMap = {};
     
     var assets = {
         make: function( id, meta ){
@@ -831,15 +820,15 @@ fmd( 'assets', ['cache','lang','event','config','module'],
             event.emit( 'analyze', asset );
             event.emit( 'alias', asset, meta );
             
-            if ( id2uriMap[asset.id] ){
-                return assetsCache[ id2uriMap[asset.id] ];
+            if ( id2urlMap[asset.id] ){
+                return assetsCache[ id2urlMap[asset.id] ];
             }
             
-            Module.has( asset.id ) ? ( asset.uri = asset.id ) : event.emit( 'id2uri', asset );
+            Module.has( asset.id ) ? ( asset.url = asset.id ) : event.emit( 'id2url', asset );
             
-            id2uriMap[asset.id] = asset.uri;
+            id2urlMap[asset.id] = asset.url;
             
-            return ( assetsCache[asset.uri] = asset );
+            return ( assetsCache[asset.url] = asset );
         },
         
         group: function( meta ){

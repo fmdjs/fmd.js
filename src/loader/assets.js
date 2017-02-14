@@ -1,8 +1,8 @@
 /**
  * @module fmd/assets
  * @author Edgar <mail@edgar.im>
- * @version v0.2
- * @date 170117
+ * @version v0.3
+ * @date 170213
  * */
 
 
@@ -11,7 +11,7 @@ fmd( 'assets', ['cache','lang','event','config','module'],
     'use strict';
     
     var assetsCache = cache.assets = {},
-        id2uriMap = {};
+        id2urlMap = {};
     
     var assets = {
         make: function( id, meta ){
@@ -20,15 +20,15 @@ fmd( 'assets', ['cache','lang','event','config','module'],
             event.emit( 'analyze', asset );
             event.emit( 'alias', asset, meta );
             
-            if ( id2uriMap[asset.id] ){
-                return assetsCache[ id2uriMap[asset.id] ];
+            if ( id2urlMap[asset.id] ){
+                return assetsCache[ id2urlMap[asset.id] ];
             }
             
-            Module.has( asset.id ) ? ( asset.uri = asset.id ) : event.emit( 'id2uri', asset );
+            Module.has( asset.id ) ? ( asset.url = asset.id ) : event.emit( 'id2url', asset );
             
-            id2uriMap[asset.id] = asset.uri;
+            id2urlMap[asset.id] = asset.url;
             
-            return ( assetsCache[asset.uri] = asset );
+            return ( assetsCache[asset.url] = asset );
         },
         
         group: function( meta ){

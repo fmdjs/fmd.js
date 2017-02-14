@@ -1,8 +1,8 @@
 /**
  * @module fmd/id2url
  * @author Edgar <mail@edgar.im>
- * @version v0.3
- * @date 170206
+ * @version v0.4
+ * @date 170213
  * */
 
 
@@ -72,18 +72,7 @@ fmd( 'id2url', ['global','event','config'],
     };
     
 
-    event.on( 'resolve', function( asset ){
-
-        asset.url = asset.uri;
-    } );
-
     event.on( 'stamp', addStamp );
     event.on( 'id2url', id2url );
 
-    event.on( 'id2uri', function( asset ){
-
-        event.emit( 'id2url', asset );
-        asset.uri = asset.url;
-    } );
-    
 } );
